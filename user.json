@@ -1,0 +1,22 @@
+[
+    {
+        "name": "anh v\u0169",
+        "dob": "2004-12-12",
+        "email": "anhvu@gmail.com",
+        "password": "$2b$12$9IAKWNPgRGcl76Gcd1KGSOhFKFqogI0Ps2e1PqYXmDx4xIQq1.WKK"
+    },
+    {
+        "name": "anh v\u0169",
+        "dob": "2004-11-11",
+        "email": "anhvu123@gmail.com",
+        "password": "$2b$12$lUsqhuo2w6Z3ziBJhVzGZ.1G/AULxbiM4ngV36aKqkf5jKoWVDX5C",
+        "role": "user"
+    },
+    {
+        "name": "Qu\u1ea3n tr\u1ecb vi\u00ean",
+        "dob": "2004-12-08",
+        "email": "admin",
+        "password": "$2b$12$ojTcfmRgII/NWDqP7dOpX.TcyCH6uaq6SXxXVV4tHjw5MpixKi0/O",
+        "role": "admin"
+    }
+]
