@@ -13,6 +13,10 @@ class UserAuthApp:
         self.root = root
         self.root.title('Library Management')
         self.books = []
+        self.users = [] # Initialize users list
+        self.current_user = None
+        self.load_books()  # Load books on startup
+        self.load_users()  # Load users on startup
         self.show_login_window()
 
     def show_login_window(self):
@@ -37,7 +41,6 @@ class UserAuthApp:
         tk.Button(frame, text='Register', font=('Arial', 16), command=self.show_register_window).grid(row=5,
                                                                                                       columnspan=2,
                                                                                                       pady=10)
-
 
     def show_register_window(self):
         self.clear_window()
@@ -76,8 +79,6 @@ class UserAuthApp:
         tk.Button(frame, text='Login', font=('Arial', 16), command=self.show_login_window).grid(row=8, columnspan=2,
                                                                                                     pady=10)
 
-
-
     def show_user_window(self):
         self.clear_window()
         tk.Label(self.root, text='USER DASHBOARD', font=('Arial', 16)).grid(row=0, columnspan=3, pady=5)
@@ -91,16 +92,7 @@ class UserAuthApp:
         tk.Button(self.root, text='Logout', command=self.logout_event).grid(row=1, column=2, padx=5, pady=5)
 
         # Create Treeview widget to display book data
-        columns = ("Title", "Author", "Year", "Category")
-        tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        tree.grid(row=2, column=0, columnspan=3, pady=5)
-
-        # Define headings
-        for col in columns:
-            tree.heading(col, text=col)
-
-        # Load book data from books.json and insert into Treeview
-        self.load_books(tree)
+        self.create_book_treeview(row=2)
 
     def show_admin_window(self):
         self.clear_window()
@@ -126,36 +118,58 @@ class UserAuthApp:
                                                                                                 pady=5)
 
         # Create Treeview widget to display book data
+        self.create_book_treeview(row=3)
+
+    def create_book_treeview(self, row):
+        """Creates and populates the book Treeview widget at the given row."""
         columns = ("Title", "Author", "Year", "Category")
         tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        tree.grid(row=3, column=0, columnspan=5, pady=5)
+        tree.grid(row=row, column=0, columnspan=5, pady=5)
 
         # Define headings
         for col in columns:
             tree.heading(col, text=col)
 
         # Load book data from books.json and insert into Treeview
-        self.load_books(tree)
+        for book in self.books:
+            try:
+                tree.insert('', tk.END, values=(
+                    book.get('title', 'N/A'),
+                    ', '.join(book.get('authors', ['N/A'])),
+                    book.get('first_publish_year', 'N/A'),
+                    ', '.join(book.get('subject', ['N/A']))
+                ))
+            except Exception as e:
+                mb.showerror("Error", f"Error loading book data: {e}")
 
     def fetch_category_data(self):
-        cate = self.category_entry.get().strip()
-        if not cate:
+        category = self.category_entry.get().strip()
+        if not category:
             mb.showerror("Error", "Please enter a category name.")
             return
 
-        url = f"http://openlibrary.org/subjects/{cate}.json"
+        url = f"http://openlibrary.org/subjects/{category}.json"
         try:
             response = requests.get(url)
             response.raise_for_status()  # Raise an error for bad status codes
             data = response.json()
 
-            # Save data to category.json
-            with open("books.json", "w", encoding="utf-8") as file:
-                json.dump(data, file, indent=4, ensure_ascii=False)
+            # Process and append fetched data to self.books
+            for work in data.get('works', []):
+                book_data = {
+                    'title': work.get('title', 'N/A'),
+                    'authors': [author['name'] for author in work.get('authors', [])],
+                    'first_publish_year': work.get('first_publish_year', 'N/A'),
+                    'subject': data.get('name', 'N/A').split('/')
+                }
+                self.books.append(book_data)
+
+            # Save updated self.books to books.json
+            self.save_books()
+
             mb.showinfo("Success", "Category data fetched and saved successfully.")
         except requests.RequestException as e:
             mb.showerror("Error", f"Failed to fetch data: {e}")
-
 
     def clear_window(self):
         for widget in self.root.winfo_children():
@@ -181,24 +195,20 @@ class UserAuthApp:
         return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
 
     def register_event(self):
-        # Retrieve data from entry fields
         name = self.entry_name.get()
         dob_str = self.entry_dob.get()
         email = self.entry_email.get()
         password = self.entry_pw.get()
         re_password = self.entry_repw.get()
 
-        # Validate form fields
         if not all([name, dob_str, email, password, re_password]):
             mb.showerror("Error", "Please fill in all fields.")
             return
 
-        # Validate email
         if not self.validate_email(email):
             mb.showerror("Error", "Invalid email format.")
             return
 
-        # Validate date of birth
         try:
             dob = datetime.strptime(dob_str, "%Y-%m-%d")
             if not self.validate_age(dob):
@@ -208,23 +218,16 @@ class UserAuthApp:
             mb.showerror("Error", "Invalid date format.")
             return
 
-        # Validate password
         if not self.validate_password(password, re_password):
             mb.showerror("Error", "Passwords do not match.")
             return
 
-        # Load existing user data
-        users = self.load_users()
-
-        # Check if email already exists
-        if any(user['email'] == email for user in users):
+        if any(user['email'] == email for user in self.users):
             mb.showerror("Error", "Email already exists.")
             return
 
-        # Hash the password
         hashed_password = self.hash_password(password)
 
-        # Create new user and save to file
         new_user = {
             'name': name,
             'dob': dob_str,
@@ -232,47 +235,33 @@ class UserAuthApp:
             'password': hashed_password.decode('utf-8'),
             'role': 'user'
         }
-        users.append(new_user)
-        self.save_users(users)
+        self.users.append(new_user)
+        self.save_users()
         mb.showinfo("Success", "User registered successfully")
-        self.show_login_window()  # Show login window after successful registration
+        self.show_login_window()
 
     def load_users(self):
-        """Load users from the JSON file."""
         if os.path.exists('user.json'):
             try:
                 with open('user.json', 'r') as file:
-                    return json.load(file)
+                    self.users = json.load(file)
             except json.JSONDecodeError:
                 mb.showerror("Error", "Error reading user data. Please contact support.")
-                return []
-        return []
+                self.users = []
 
-    def save_users(self, users):
-        """Save users to the JSON file."""
+    def save_users(self):
         with open('user.json', 'w') as file:
-            json.dump(users, file, indent=4)
+            json.dump(self.users, file, indent=4)
 
     def login_event(self):
-        # Retrieve data from entry fields
         email = self.login_email.get()
         password = self.login_pw.get()
 
-        # Validate form fields
         if not all([email, password]):
             mb.showerror("Error", "Please fill in all fields.")
             return
 
-        # Load existing user data
-        try:
-            with open('user.json', 'r') as file:
-                users = json.load(file)
-        except FileNotFoundError:
-            mb.showerror("Error", "No user data found.")
-            return
-
-        # Check email and password
-        for user in users:
+        for user in self.users:
             if user['email'] == email and self.check_password(user['password'], password):
                 self.current_user = user
                 if user.get('role') == 'admin':
@@ -283,17 +272,18 @@ class UserAuthApp:
 
         mb.showerror("Error", "Invalid email or password.")
 
-    def load_books(self, tree=None):
-        """Load books from the JSON file. Optionally populate a Treeview."""
+    def load_books(self):
         if os.path.exists('books.json'):
             try:
-                with open('books.json', 'r') as file:
+                with open('books.json', 'r', encoding='utf-8') as file:
                     self.books = json.load(file)
-                    if tree:
-                        for book in self.books:
-                            tree.insert('', tk.END, values=(book['title'], book['authors'], book['first_publish_year'], book['subject']))
             except json.JSONDecodeError:
                 mb.showerror("Error", "Error reading book data. Please contact support.")
+                self.books = []
+
+    def save_books(self):
+        with open('books.json', 'w', encoding='utf-8') as file:
+            json.dump(self.books, file, indent=4, ensure_ascii=False)
 
     def logout_event(self):
         self.current_user = None
@@ -345,14 +335,13 @@ class UserAuthApp:
 
         new_book = {
             'title': title,
-            'authors': author,
+            'authors': [author],  # Store author as a list
             'first_publish_year': year,
-            'subject': category
+            'subject': [category]  # Store category as a list
         }
 
         self.books.append(new_book)
-        with open('books.json', 'w') as file:
-            json.dump(self.books, file, indent=4)
+        self.save_books()
         mb.showinfo("Success", "Book added successfully")
         self.show_admin_window()
 
@@ -360,27 +349,33 @@ class UserAuthApp:
         self.clear_window()
         tk.Label(self.root, text='EDIT BOOK INFO', font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
 
-        # Create Treeview widget to display book data
+        # Create Treeview widget (using self.book_tree)
         columns = ("ID", "Title", "Author", "Year", "Category")
         self.book_tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        self.book_tree.grid(row=1, column=0, columnspan=2, pady=5)
+        self.book_tree.grid(row=1, column=1, columnspan=5, pady=5)
 
         # Define headings
         for col in columns:
             self.book_tree.heading(col, text=col)
-            self.book_tree.column(col, width=100)
 
         # Load book data from books.json and insert into Treeview
-        self.load_books()
-        for i, book in enumerate(self.books):
-            self.book_tree.insert('', tk.END, values=(i, book['title'], book['author'], book['year'], book['category']))
+        for i, book in enumerate(self.books): # Add index 'i'
+            try:
+                self.book_tree.insert('', tk.END, values=(
+                    i, # Insert index as ID
+                    book.get('title', 'N/A'),
+                    ', '.join(book.get('authors', ['N/A'])),
+                    book.get('first_publish_year', 'N/A'),
+                    ', '.join(book.get('subject', ['N/A']))
+                ))
+            except Exception as e:
+                mb.showerror("Error", f"Error loading book data: {e}")
 
         # Select Book button
         tk.Button(self.root, text='Select Book', command=self.select_book_to_edit).grid(row=2, column=0, pady=5)
 
         # Cancel button
         tk.Button(self.root, text='Cancel', command=self.show_admin_window).grid(row=2, column=1, pady=5)
-
     def select_book_to_edit(self):
         selected_item = self.book_tree.selection()
         if not selected_item:
@@ -396,9 +391,9 @@ class UserAuthApp:
         # Book form with existing data
         self.create_book_form()
         self.title_entry.insert(0, self.editing_book['title'])
-        self.author_entry.insert(0, self.editing_book['author'])
-        self.year_entry.insert(0, self.editing_book['year'])
-        self.category_entry.insert(0, self.editing_book['category'])
+        self.author_entry.insert(0, ', '.join(self.editing_book['authors']))
+        self.year_entry.insert(0, self.editing_book['first_publish_year'])
+        self.category_entry.insert(0, ', '.join(self.editing_book['subject']))
 
         # Save and Cancel buttons
         tk.Button(self.root, text='Save Changes', command=self.save_edited_book).grid(row=5, columnspan=2, pady=5)
@@ -415,11 +410,10 @@ class UserAuthApp:
             return
 
         # Update the book details
-        self.editing_book.update({'title': title, 'author': author, 'year': year, 'category': category})
+        self.editing_book.update({'title': title, 'authors': [author], 'first_publish_year': year, 'subject': [category]})
 
         # Save the updated books list to the file
-        with open('books.json', 'w') as file:
-            json.dump(self.books, file, indent=4)
+        self.save_books()
 
         mb.showinfo("Success", "Book details updated successfully")
         self.show_admin_window()
@@ -431,23 +425,30 @@ class UserAuthApp:
         # Create Treeview widget to display book data
         columns = ("ID", "Title", "Author", "Year", "Category")
         self.book_tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        self.book_tree.grid(row=1, column=0, columnspan=2, pady=5)
+        self.book_tree.grid(row=1, column=1, columnspan=5, pady=5)
 
         # Define headings
         for col in columns:
             self.book_tree.heading(col, text=col)
-            self.book_tree.column(col, width=100)
 
         # Load book data from books.json and insert into Treeview
-        self.load_books()
-        for i, book in enumerate(self.books):
-            self.book_tree.insert('', tk.END, values=(i, book['title'], book['author'], book['year'], book['category']))
+        for i, book in enumerate(self.books):  # Add index 'i'
+            try:
+                self.book_tree.insert('', tk.END, values=(
+                    i,  # Insert index as ID
+                    book.get('title', 'N/A'),
+                    ', '.join(book.get('authors', ['N/A'])),
+                    book.get('first_publish_year', 'N/A'),
+                    ', '.join(book.get('subject', ['N/A']))
+                ))
+            except Exception as e:
+                mb.showerror("Error", f"Error loading book data: {e}")
 
         # Select Book button
-        tk.Button(self.root, text='Select Book', command=self.select_book_to_delete).grid(row=2, column=0, pady=5)
+        tk.Button(self.root, text='Select Book', command=self.select_book_to_delete).grid(row=3, column=0, pady=5)
 
         # Cancel button
-        tk.Button(self.root, text='Cancel', command=self.show_admin_window).grid(row=2, column=1, pady=5)
+        tk.Button(self.root, text='Cancel', command=self.show_admin_window).grid(row=3, column=1, pady=5)
 
     def select_book_to_delete(self):
         selected_item = self.book_tree.selection()
@@ -458,10 +459,9 @@ class UserAuthApp:
         book_id = int(self.book_tree.item(selected_item[0], 'values')[0])
         if mb.askyesno("Confirm Delete", f"Are you sure you want to delete '{self.books[book_id]['title']}'?"):
             del self.books[book_id]
-            with open('books.json', 'w') as file:
-                json.dump(self.books, file, indent=4)
+            self.save_books()
             mb.showinfo("Success", "Book deleted successfully")
-            self.show_admin_window()  # Refresh the admin window
+            self.show_admin_window()
 
     def manage_users_event(self):
         self.clear_window()
@@ -478,9 +478,9 @@ class UserAuthApp:
             self.user_tree.column(col, width=100)
 
         # Load user data from user.json and insert into Treeview
-        self.users = self.load_users()
+        self.load_users()
         for i, user in enumerate(self.users):
-            self.user_tree.insert('', tk.END, values=(i, user['name'], user['email']))
+            self.user_tree.insert('', tk.END, values=(i, user['name'], user['email'], user['role']))
 
         # Add User button
         tk.Button(self.root, text='Add User', command=self.add_user_event).grid(row=3, column=0, pady=5)
@@ -502,7 +502,7 @@ class UserAuthApp:
         self.create_user_form()
 
         # Save and Cancel buttons
-        tk.Button(self.root, text='Save', command=self.save_user).grid(row=7, columnspan=2, pady=5)  # Moved to row 7
+        tk.Button(self.root, text='Save', command=self.save_user).grid(row=7, columnspan=2, pady=5)
         tk.Button(self.root, text='Cancel', command=self.manage_users_event).grid(row=8, columnspan=2, pady=5)
 
     def create_user_form(self):
@@ -510,7 +510,7 @@ class UserAuthApp:
         self.name_entry = tk.Entry(self.root)
         self.name_entry.grid(row=1, column=1, pady=5)
 
-        tk.Label(self.root, text='Date of birth (YYYY-MM-DD):').grid(row=2, column=0, pady=5, sticky=tk.E)
+        tk.Label(self.root, text='Date of Birth (YYYY-MM-DD):').grid(row=2, column=0, pady=5, sticky=tk.E)
         self.dob_entry = tk.Entry(self.root)
         self.dob_entry.grid(row=2, column=1, pady=5)
 
@@ -526,24 +526,30 @@ class UserAuthApp:
         self.repw_entry = tk.Entry(self.root, show='*')
         self.repw_entry.grid(row=5, column=1, pady=5)
 
+        # Role selection
+        tk.Label(self.root, text='Role:').grid(row=6, column=0, pady=5, sticky=tk.E)
+        self.role_var = tk.StringVar(self.root)
+        self.role_var.set("user")  # Default role
+        role_options = ["user", "admin"]
+        self.role_dropdown = tk.OptionMenu(self.root, self.role_var, *role_options)
+        self.role_dropdown.grid(row=6, column=1, pady=5)
+
     def save_user(self):
         name = self.name_entry.get()
         dob_str = self.dob_entry.get()
         email = self.email_entry.get()
         password = self.pw_entry.get()
         re_password = self.repw_entry.get()
+        role = self.role_var.get()
 
-        # Validate form fields
         if not all([name, dob_str, email, password, re_password]):
             mb.showerror("Error", "Please fill in all fields.")
             return
 
-        # Validate email
         if not self.validate_email(email):
             mb.showerror("Error", "Invalid email format.")
             return
 
-        # Validate date of birth
         try:
             dob = datetime.strptime(dob_str, "%Y-%m-%d")
             if not self.validate_age(dob):
@@ -553,31 +559,27 @@ class UserAuthApp:
             mb.showerror("Error", "Invalid date format.")
             return
 
-        # Validate password
         if not self.validate_password(password, re_password):
             mb.showerror("Error", "Passwords do not match.")
             return
 
-        # Check if email already exists
         if any(user['email'] == email for user in self.users):
             mb.showerror("Error", "Email already exists.")
             return
 
-        # Hash the password
         hashed_password = self.hash_password(password)
 
-        # Create new user and save to file
         new_user = {
             'name': name,
             'dob': dob_str,
             'email': email,
             'password': hashed_password.decode('utf-8'),
-            'role': 'user'
+            'role': role
         }
         self.users.append(new_user)
-        self.save_users(self.users)
+        self.save_users()
         mb.showinfo("Success", "User added successfully")
-        self.manage_users_event() # refresh the manage users window after adding a new user
+        self.manage_users_event()
 
     def edit_user_event(self):
         selected_item = self.user_tree.selection()
@@ -596,23 +598,21 @@ class UserAuthApp:
         self.name_entry.insert(0, self.editing_user['name'])
         self.dob_entry.insert(0, self.editing_user['dob'])
         self.email_entry.insert(0, self.editing_user['email'])
-        # We don't show password in edit form
-        # self.pw_entry.insert(0, self.editing_user['password'])
-        # self.repw_entry.insert(0, self.editing_user['password'])
+        self.role_var.set(self.editing_user['role'])  # Set the role
 
         # Save and Cancel buttons
-        tk.Button(self.root, text='Save Changes', command=self.save_edited_user).grid(row=5, columnspan=2, pady=5)
-        tk.Button(self.root, text='Cancel', command=self.manage_users_event).grid(row=6, columnspan=2, pady=5)
+        tk.Button(self.root, text='Save Changes', command=self.save_edited_user).grid(row=7, columnspan=2, pady=5)  # Moved to row 7
+        tk.Button(self.root, text='Cancel', command=self.manage_users_event).grid(row=8, columnspan=2, pady=5)
 
     def save_edited_user(self):
         name = self.name_entry.get()
         dob_str = self.dob_entry.get()
         email = self.email_entry.get()
-        # We don't get password from edit form
+        role = self.role_var.get()  # Get the selected role
 
-        # Validate form fields
+        # Validate form fields (excluding passwords)
         if not all([name, dob_str, email]):
-            mb.showerror("Error", "Please fill in all fields.")
+            mb.showerror("Error", "Please fill in all fields (except passwords).")
             return
 
         # Validate email
@@ -631,11 +631,10 @@ class UserAuthApp:
             return
 
         # Update the user details
-        self.editing_user.update({'name': name, 'dob': dob_str, 'email': email})
+        self.editing_user.update({'name': name, 'dob': dob_str, 'email': email, 'role': role})
 
         # Save the updated users list to the file
-        with open('user.json', 'w') as file:
-            json.dump(self.users, file, indent=4)
+        self.save_users()
 
         mb.showinfo("Success", "User details updated successfully")
         self.manage_users_event()
@@ -653,6 +652,7 @@ class UserAuthApp:
                 json.dump(self.users, file, indent=4)
             mb.showinfo("Success", "User deleted successfully")
             self.manage_users_event()
+
 
 if __name__ == "__main__":
     root = tk.Tk()

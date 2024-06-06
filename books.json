@@ -1,14 +1,394 @@
 [
     {
-        "title": "life is seem ok",
-        "author": "anh vu",
-        "year": "hello",
-        "category": "nothings"
+        "title": "Wuthering Heights",
+        "authors": [
+            "Emily Brontë"
+        ],
+        "first_publish_year": "1847",
+        "subject": [
+            "game"
+        ]
     },
     {
-        "title": "hello",
-        "author": "anh vux",
-        "year": "1388",
-        "category": "name"
+        "title": "The Great Gatsby",
+        "authors": [
+            "F. Scott Fitzgerald"
+        ],
+        "first_publish_year": 1920,
+        "subject": [
+            "love"
+        ]
+    },
+    {
+        "title": "Ethan Frome",
+        "authors": [
+            "Edith Wharton"
+        ],
+        "first_publish_year": 1910,
+        "subject": [
+            "love"
+        ]
+    },
+    {
+        "title": "Romeo and Juliet",
+        "authors": [
+            "William Shakespeare"
+        ],
+        "first_publish_year": 1597,
+        "subject": [
+            "love"
+        ]
+    },
+    {
+        "title": "πολιτεία",
+        "authors": [
+            "Πλάτων"
+        ],
+        "first_publish_year": 1554,
+        "subject": [
+            "love"
+        ]
+    },
+    {
+        "title": "Le Comte de Monte Cristo",
+        "authors": [
+            "Alexandre Dumas"
+        ],
+        "first_publish_year": 1830,
+        "subject": [
+            "love"
+        ]
+    },
+    {
+        "title": "Anna Karenina",
+        "authors": [
+            "Лев Толстой"
+        ],
+        "first_publish_year": 1876,
+        "subject": [
+            "love"
+        ]
+    },
+    {
+        "title": "Sonnets",
+        "authors": [
+            "William Shakespeare"
+        ],
+        "first_publish_year": 1609,
+        "subject": [
+            "love"
+        ]
+    },
+    {
+        "title": "As You Like It",
+        "authors": [
+            "William Shakespeare"
+        ],
+        "first_publish_year": 1734,
+        "subject": [
+            "love"
+        ]
+    },
+    {
+        "title": "The Importance of Being Earnest",
+        "authors": [
+            "Oscar Wilde"
+        ],
+        "first_publish_year": 1893,
+        "subject": [
+            "love"
+        ]
+    },
+    {
+        "title": "Le petit prince",
+        "authors": [
+            "Antoine de Saint-Exupéry"
+        ],
+        "first_publish_year": 1943,
+        "subject": [
+            "love"
+        ]
+    },
+    {
+        "title": "Συμπόσιον",
+        "authors": [
+            "Πλάτων"
+        ],
+        "first_publish_year": 1559,
+        "subject": [
+            "love"
+        ]
+    },
+    {
+        "title": "Pride and Prejudice",
+        "authors": [
+            "Jane Austen"
+        ],
+        "first_publish_year": 1813,
+        "subject": [
+            "fiction"
+        ]
+    },
+    {
+        "title": "Alice's Adventures in Wonderland",
+        "authors": [
+            "Lewis Carroll"
+        ],
+        "first_publish_year": 1865,
+        "subject": [
+            "fiction"
+        ]
+    },
+    {
+        "title": "Adventures of Huckleberry Finn",
+        "authors": [
+            "Mark Twain"
+        ],
+        "first_publish_year": 1876,
+        "subject": [
+            "fiction"
+        ]
+    },
+    {
+        "title": "Emma",
+        "authors": [
+            "Jane Austen"
+        ],
+        "first_publish_year": 1815,
+        "subject": [
+            "fiction"
+        ]
+    },
+    {
+        "title": "Frankenstein or The Modern Prometheus",
+        "authors": [
+            "Mary Shelley"
+        ],
+        "first_publish_year": 1818,
+        "subject": [
+            "fiction"
+        ]
+    },
+    {
+        "title": "The Picture of Dorian Gray",
+        "authors": [
+            "Oscar Wilde"
+        ],
+        "first_publish_year": 1890,
+        "subject": [
+            "fiction"
+        ]
+    },
+    {
+        "title": "Wuthering Heights",
+        "authors": [
+            "Emily Brontë"
+        ],
+        "first_publish_year": 1847,
+        "subject": [
+            "fiction"
+        ]
+    },
+    {
+        "title": "Treasure Island",
+        "authors": [
+            "Robert Louis Stevenson"
+        ],
+        "first_publish_year": 1880,
+        "subject": [
+            "fiction"
+        ]
+    },
+    {
+        "title": "Little Women",
+        "authors": [
+            "Louisa May Alcott"
+        ],
+        "first_publish_year": 1848,
+        "subject": [
+            "fiction"
+        ]
+    },
+    {
+        "title": "A Tale of Two Cities",
+        "authors": [
+            "Charles Dickens"
+        ],
+        "first_publish_year": 1800,
+        "subject": [
+            "fiction"
+        ]
+    },
+    {
+        "title": "A Christmas Carol",
+        "authors": [
+            "Charles Dickens"
+        ],
+        "first_publish_year": 1843,
+        "subject": [
+            "fiction"
+        ]
+    },
+    {
+        "title": "Gulliver's Travels",
+        "authors": [
+            "Jonathan Swift"
+        ],
+        "first_publish_year": 1726,
+        "subject": [
+            "fiction"
+        ]
+    },
+    {
+        "title": "name",
+        "authors": [
+            "name "
+        ],
+        "first_publish_year": "name ",
+        "subject": [
+            "name"
+        ]
+    },
+    {
+        "title": "Records of big game",
+        "authors": [
+            "Rowland Ward"
+        ],
+        "first_publish_year": 1892,
+        "subject": [
+            "game"
+        ]
+    },
+    {
+        "title": "Scooby-Doo! Read and Solve",
+        "authors": [
+            "Gail Herman"
+        ],
+        "first_publish_year": 2006,
+        "subject": [
+            "game"
+        ]
+    },
+    {
+        "title": "Records of big game",
+        "authors": [
+            "Rowland Ward"
+        ],
+        "first_publish_year": 1903,
+        "subject": [
+            "game"
+        ]
+    },
+    {
+        "title": "Prairie and forest",
+        "authors": [
+            "Parker Gillmore"
+        ],
+        "first_publish_year": 1874,
+        "subject": [
+            "game"
+        ]
+    },
+    {
+        "title": "My Indian Journal",
+        "authors": [
+            "Walter Campbell"
+        ],
+        "first_publish_year": 1864,
+        "subject": [
+            "game"
+        ]
+    },
+    {
+        "title": "In the land of the moose, the bear, and the beaver",
+        "authors": [
+            "Achilles Daunt"
+        ],
+        "first_publish_year": 1800,
+        "subject": [
+            "game"
+        ]
+    },
+    {
+        "title": "The land-birds and game-birds of New England",
+        "authors": [
+            "Henry Davis Minot"
+        ],
+        "first_publish_year": 1877,
+        "subject": [
+            "game"
+        ]
+    },
+    {
+        "title": "The Linux Cookbook",
+        "authors": [
+            "Michael Stutz"
+        ],
+        "first_publish_year": 2001,
+        "subject": [
+            "game"
+        ]
+    },
+    {
+        "title": "Game birds and birds of prey",
+        "authors": [
+            "Neltje Blanchan"
+        ],
+        "first_publish_year": 1898,
+        "subject": [
+            "game"
+        ]
+    },
+    {
+        "title": "Wild about game",
+        "authors": [
+            "Jane Hibler",
+            "Janie Hibler"
+        ],
+        "first_publish_year": 1998,
+        "subject": [
+            "game"
+        ]
+    },
+    {
+        "title": "The big game of North America",
+        "authors": [
+            "G. O. Shields"
+        ],
+        "first_publish_year": 1890,
+        "subject": [
+            "game"
+        ]
+    },
+    {
+        "title": "Myst",
+        "authors": [
+            "Rick Barba",
+            "Rusel DeMaria"
+        ],
+        "first_publish_year": 1993,
+        "subject": [
+            "game"
+        ]
+    },
+    {
+        "title": "na",
+        "authors": [
+            "na"
+        ],
+        "first_publish_year": "nana",
+        "subject": [
+            "na"
+        ]
+    },
+    {
+        "title": "noname",
+        "authors": [
+            "name"
+        ],
+        "first_publish_year": "name",
+        "subject": [
+            "name"
+        ]
     }
 ]
