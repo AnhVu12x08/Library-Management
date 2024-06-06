@@ -37,19 +37,6 @@ class UserAuthApp:
                                                                                                       columnspan=2,
                                                                                                       pady=10)
 
-    def show_register_window(self):
-        self.clear_window()
-        tk.Label(self.root, text='Register Account', font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
-
-        # Registration form
-        self.create_registration_form()
-
-        # Registration button
-        tk.Button(self.root, text='Register Account', command=self.register_event).grid(row=6, columnspan=2, pady=5)
-
-        # Login prompt
-        tk.Label(self.root, text='Already have an account?').grid(row=7, columnspan=2, pady=5)
-        tk.Button(self.root, text='Login', command=self.show_login_window).grid(row=8, columnspan=2, pady=5)
 
     def show_register_window(self):
         self.clear_window()
@@ -64,7 +51,7 @@ class UserAuthApp:
         self.entry_name.grid(row=1, column=1, pady=5)
 
         tk.Label(frame, text='Date of Birth (YYYY-MM-DD):', font=('Arial', 16)).grid(row=2, column=0, pady=5,
-                                                                                     sticky='e')
+                                                                                         sticky='e')
         self.entry_dob = tk.Entry(frame, font=('Arial', 16), width=25)
         self.entry_dob.grid(row=2, column=1, pady=5)
 
@@ -81,12 +68,14 @@ class UserAuthApp:
         self.entry_repw.grid(row=5, column=1, pady=5)
 
         tk.Button(frame, text='Register Account', font=('Arial', 16), command=self.register_event).grid(row=6,
-                                                                                                        columnspan=2,
-                                                                                                        pady=10)
+                                                                                                            columnspan=2,
+                                                                                                            pady=10)
 
         tk.Label(frame, text='Already have an account?', font=('Arial', 16)).grid(row=7, columnspan=2, pady=10)
         tk.Button(frame, text='Login', font=('Arial', 16), command=self.show_login_window).grid(row=8, columnspan=2,
-                                                                                                pady=10)
+                                                                                                    pady=10)
+
+
 
     def show_user_window(self):
         self.clear_window()

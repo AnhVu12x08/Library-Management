@@ -25,5 +25,19 @@
         "email": "truonganhvu@gmail.com",
         "password": "$2b$12$EPeMwf8uS71JtGeS.FlNcO2iuhqraAfS87JPCfB9VhsNSnA.1ALwO",
         "role": "user"
+    },
+    {
+        "name": "quocbao",
+        "dob": "2002-12-12",
+        "email": "quocbao@gmail.com",
+        "password": "$2b$12$vxQ7eUfi2fLvQFWC6GwKmORPTrhizU8BOajD6NsLF95e5kTKm6RQe",
+        "role": "user"
+    },
+    {
+        "name": "anhvu1234",
+        "dob": "2001-12-12",
+        "email": "anhvu1234@gmail.com",
+        "password": "$2b$12$DMfL8BALOqMeUbG4I/S2WekyLt1FBwCV9PQ7yTj3LrSKEd1doJzUG",
+        "role": "user"
     }
 ]
