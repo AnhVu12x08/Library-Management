@@ -448,20 +448,20 @@ class UserAuthApp:
         self.clear_window()
         tk.Label(self.root, text='MANAGE USERS', font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
 
-        # # Create Treeview widget to display user data
-        # columns = ("ID", "Name", "Email", "Role")
-        # self.user_tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        # self.user_tree.grid(row=1, column=0, pady=5)
-        #
-        # # Define headings
-        # for col in columns:
-        #     self.user_tree.heading(col, text=col)
-        #     self.user_tree.column(col, width=100)
-        #
-        # # Load user data from user.json and insert into Treeview
-        # self.users = self.load_users()
-        # for i, user in enumerate(self.users):
-        #     self.user_tree.insert('', tk.END, values=(i, user['name'], user['email']))
+        # Create Treeview widget to display user data
+        columns = ("ID", "Name", "Email", "Role")
+        self.user_tree = ttk.Treeview(self.root, columns=columns, show='headings')
+        self.user_tree.grid(row=1, column=0, pady=5)
+
+        # Define headings
+        for col in columns:
+            self.user_tree.heading(col, text=col)
+            self.user_tree.column(col, width=100)
+
+        # Load user data from user.json and insert into Treeview
+        self.users = self.load_users()
+        for i, user in enumerate(self.users):
+            self.user_tree.insert('', tk.END, values=(i, user['name'], user['email']))
 
         # Add User button
         tk.Button(self.root, text='Add User', command=self.add_user_event).grid(row=3, column=0, pady=5)
