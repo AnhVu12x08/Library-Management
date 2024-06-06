@@ -11,7 +11,6 @@ class UserAuthApp:
     def __init__(self, root):
         self.root = root
         self.root.title('Library Management')
-        self.current_user = None
         self.books = []
         self.show_login_window()
 
@@ -449,32 +448,32 @@ class UserAuthApp:
         self.clear_window()
         tk.Label(self.root, text='MANAGE USERS', font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
 
-        # Create Treeview widget to display user data
-        columns = ("ID", "Name", "Email", "Role")
-        self.user_tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        self.user_tree.grid(row=1, column=0, columnspan=2, pady=5)
-
-        # Define headings
-        for col in columns:
-            self.user_tree.heading(col, text=col)
-            self.user_tree.column(col, width=100)
-
-        # Load user data from user.json and insert into Treeview
-        self.users = self.load_users()
-        for i, user in enumerate(self.users):
-            self.user_tree.insert('', tk.END, values=(i, user['name'], user['email'], user['role']))
+        # # Create Treeview widget to display user data
+        # columns = ("ID", "Name", "Email", "Role")
+        # self.user_tree = ttk.Treeview(self.root, columns=columns, show='headings')
+        # self.user_tree.grid(row=1, column=0, pady=5)
+        #
+        # # Define headings
+        # for col in columns:
+        #     self.user_tree.heading(col, text=col)
+        #     self.user_tree.column(col, width=100)
+        #
+        # # Load user data from user.json and insert into Treeview
+        # self.users = self.load_users()
+        # for i, user in enumerate(self.users):
+        #     self.user_tree.insert('', tk.END, values=(i, user['name'], user['email']))
 
         # Add User button
-        tk.Button(self.root, text='Add User', command=self.add_user_event).grid(row=2, column=0, pady=5)
+        tk.Button(self.root, text='Add User', command=self.add_user_event).grid(row=3, column=0, pady=5)
 
         # Edit User button
-        tk.Button(self.root, text='Edit User', command=self.edit_user_event).grid(row=2, column=1, pady=5)
+        tk.Button(self.root, text='Edit User', command=self.edit_user_event).grid(row=3, column=1, pady=5)
 
         # Delete User button
-        tk.Button(self.root, text='Delete User', command=self.delete_user_event).grid(row=3, column=0, pady=5)
+        tk.Button(self.root, text='Delete User', command=self.delete_user_event).grid(row=4, column=0, pady=5)
 
         # Back to Admin Dashboard button
-        tk.Button(self.root, text='Back to Admin Dashboard', command=self.show_admin_window).grid(row=3, column=1, pady=5)
+        tk.Button(self.root, text='Back to Admin Dashboard', command=self.show_admin_window).grid(row=4, column=1, pady=5)
 
     def add_user_event(self):
         self.clear_window()
@@ -484,8 +483,8 @@ class UserAuthApp:
         self.create_user_form()
 
         # Save and Cancel buttons
-        tk.Button(self.root, text='Save', command=self.save_user).grid(row=5, columnspan=2, pady=5)
-        tk.Button(self.root, text='Cancel', command=self.manage_users_event).grid(row=6, columnspan=2, pady=5)
+        tk.Button(self.root, text='Save', command=self.save_user).grid(row=7, columnspan=2, pady=5)  # Moved to row 7
+        tk.Button(self.root, text='Cancel', command=self.manage_users_event).grid(row=8, columnspan=2, pady=5)
 
     def create_user_form(self):
         tk.Label(self.root, text='Name:').grid(row=1, column=0, pady=5, sticky=tk.E)
@@ -635,38 +634,6 @@ class UserAuthApp:
                 json.dump(self.users, file, indent=4)
             mb.showinfo("Success", "User deleted successfully")
             self.manage_users_event()
-
-    def manage_users_event(self):
-        self.clear_window()
-        tk.Label(self.root, text='MANAGE USERS', font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
-
-        # Create Treeview widget to display user data
-        columns = ("ID", "Name", "Email", "Role")
-        self.user_tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        self.user_tree.grid(row=1, column=0, columnspan=2, pady=5)
-
-        # Define headings
-        for col in columns:
-            self.user_tree.heading(col, text=col)
-            self.user_tree.column(col, width=100)
-
-        # **Load user data from user.json and insert into Treeview**
-        self.users = self.load_users()
-        for i, user in enumerate(self.users):
-            self.user_tree.insert('', tk.END, values=(i, user['name'], user['email'], user['role']))
-
-        # Add User button
-        tk.Button(self.root, text='Add User', command=self.add_user_event).grid(row=2, column=0, pady=5)
-
-        # Edit User button
-        tk.Button(self.root, text='Edit User', command=self.edit_user_event).grid(row=2, column=1, pady=5)
-
-        # Delete User button
-        tk.Button(self.root, text='Delete User', command=self.delete_user_event).grid(row=3, column=0, pady=5)
-
-        # Back to Admin Dashboard button
-        tk.Button(self.root, text='Back to Admin Dashboard', command=self.show_admin_window).grid(row=3, column=1,
-                                                                                                  pady=5)
 
 if __name__ == "__main__":
     root = tk.Tk()
