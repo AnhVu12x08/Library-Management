@@ -13,6 +13,7 @@ class UserAuthApp:
         self.root.title('Library Management')
         self.current_user = None
         self.books = []
+        self.users = []  # Initialize an empty list for users
         self.show_login_window()
 
     def show_login_window(self):
@@ -37,20 +38,6 @@ class UserAuthApp:
         tk.Button(frame, text='Register', font=('Arial', 16), command=self.show_register_window).grid(row=5,
                                                                                                       columnspan=2,
                                                                                                       pady=10)
-
-    def show_register_window(self):
-        self.clear_window()
-        tk.Label(self.root, text='Register Account', font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
-
-        # Registration form
-        self.create_registration_form()
-
-        # Registration button
-        tk.Button(self.root, text='Register Account', command=self.register_event).grid(row=6, columnspan=2, pady=5)
-
-        # Login prompt
-        tk.Label(self.root, text='Already have an account?').grid(row=7, columnspan=2, pady=5)
-        tk.Button(self.root, text='Login', command=self.show_login_window).grid(row=8, columnspan=2, pady=5)
 
     def show_register_window(self):
         self.clear_window()
@@ -459,7 +446,7 @@ class UserAuthApp:
             self.user_tree.heading(col, text=col)
             self.user_tree.column(col, width=100)
 
-        # Load user data from user.json and insert into Treeview
+        # **Load user data from user.json and insert into Treeview**
         self.users = self.load_users()
         for i, user in enumerate(self.users):
             self.user_tree.insert('', tk.END, values=(i, user['name'], user['email'], user['role']))
@@ -474,7 +461,8 @@ class UserAuthApp:
         tk.Button(self.root, text='Delete User', command=self.delete_user_event).grid(row=3, column=0, pady=5)
 
         # Back to Admin Dashboard button
-        tk.Button(self.root, text='Back to Admin Dashboard', command=self.show_admin_window).grid(row=3, column=1, pady=5)
+        tk.Button(self.root, text='Back to Admin Dashboard', command=self.show_admin_window).grid(row=3, column=1,
+                                                                                                  pady=5)
 
     def add_user_event(self):
         self.clear_window()
