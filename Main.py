@@ -6,6 +6,8 @@ import bcrypt
 import os
 from datetime import datetime
 import tkinter.messagebox as mb
+import requests
+
 
 class UserAuthApp:
     def __init__(self, root):
@@ -450,7 +452,7 @@ class UserAuthApp:
         # Load user data from user.json and insert into Treeview
         self.users = self.load_users()
         for i, user in enumerate(self.users):
-            self.user_tree.insert('', tk.END, values=(i, user['name'], user['email']))
+            self.user_tree.insert('', tk.END, values=(i, user['name'], user['email'], user['role']))
 
         # Add User button
         tk.Button(self.root, text='Add User', command=self.add_user_event).grid(row=3, column=0, pady=5)
@@ -624,8 +626,19 @@ class UserAuthApp:
             mb.showinfo("Success", "User deleted successfully")
             self.manage_users_event()
 
+
 if __name__ == "__main__":
     root = tk.Tk()
+
+    # root.configure(bg='#AFEEEE')
+    root.configure(bg='Ivory')
+
+    # Set the window to full screen
     root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
+
+    # Initialize the application
     app = UserAuthApp(root)
+
+    # Start the main loop
     root.mainloop()
+
