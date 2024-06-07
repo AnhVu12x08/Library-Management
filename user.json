@@ -1,15 +1,16 @@
 [
     {
-        "name": "Truong Anh Vu",
-        "dob": "2004-12-12",
+        "name": "anhvu",
+        "dob": "2001-12-12",
         "email": "anhvu@gmail.com",
-        "password": "$2b$12$9IAKWNPgRGcl76Gcd1KGSOhFKFqogI0Ps2e1PqYXmDx4xIQq1.WKK"
+        "password": "$2b$12$te4oBYKfRC6/S7Bki48A7OWhG6vOxQHhJfPBTeMVXL/Ez2tXzM9Su",
+        "role": "user"
     },
     {
-        "name": "Qu\u1ea3n tr\u1ecb vi\u00ean",
-        "dob": "2004-12-08",
+        "name": "admin",
+        "dob": "2001-12-12",
         "email": "admin",
-        "password": "$2b$12$ojTcfmRgII/NWDqP7dOpX.TcyCH6uaq6SXxXVV4tHjw5MpixKi0/O",
+        "password": "$2b$12$g98uWITDyoWp/Q8WIefbYO7lt7dQbCSWm27Y0y7zETvIML2efPwjS",
         "role": "admin"
     }
 ]
