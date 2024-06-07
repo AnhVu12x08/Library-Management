@@ -6,6 +6,7 @@ import bcrypt
 import os
 from datetime import datetime
 import tkinter.messagebox as mb
+import requests
 
 class UserAuthApp:
     def __init__(self, root):
@@ -114,12 +115,18 @@ class UserAuthApp:
             ('Logout', self.logout_event)
         ]
 
+        tk.Label(self.root, text='Category:', font=('Arial', 12)).grid(row=3, column=0, padx=5, pady=5, sticky='e')
+        self.category_entry = tk.Entry(self.root, width=20, font=('Arial', 12))
+        self.category_entry.grid(row=3, column=1, padx=5, pady=5)
+        tk.Button(self.root, text='Fetch Category Data', command=self.fetch_category_data).grid(row=3, column=2, padx=5,
+                                                                                                pady=5)
+
         for i, (text, command) in enumerate(admin_buttons):
             tk.Button(self.root, text=text, command=command).grid(row=1, column=i, padx=5, pady=5)
         # Create Treeview widget to display book data
         columns = ("Title", "Author", "Year", "Category")
         tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        tree.grid(row= 2, column=0, columnspan=3, pady=5)
+        tree.grid(row=2, column=0, columnspan=3, pady=5)
 
         # Define headings
         for col in columns:
@@ -127,6 +134,45 @@ class UserAuthApp:
 
         # Load book data from books.json and insert into Treeview
         self.load_books(tree)
+
+    def fetch_category_data(self):
+        category = self.category_entry.get().strip()
+        if not category:
+            mb.showerror("Error", "Please enter a category name.")
+            return
+
+        url = f"http://openlibrary.org/subjects/{category}.json"
+        try:
+            response = requests.get(url)
+            response.raise_for_status()  # Raise an error for bad status codes
+            data = response.json()
+
+            # Process and format data immediately
+            self.format_book_data(data)
+
+            mb.showinfo("Success", "Category data fetched and saved successfully.")
+        except requests.RequestException as e:
+            mb.showerror("Error",f"Failed to fetch data: {e}")
+
+    def format_book_data(self, data):
+        try:
+            formatted_works = [
+                {
+                    "title": work.get("title"),
+                    "author": work.get("authors", [{}])[0].get("name") if work.get("authors") else None,
+                    "year": work.get("first_publish_year"),
+                    "category": data.get("name")
+                }
+                for work in data.get("works", [])
+            ]
+
+            # Open books.json in write mode ('w') to overwrite previous data
+            with open("books.json", "w", encoding="utf-8") as f:
+                json.dump(formatted_works, f, indent=4, ensure_ascii=False)
+
+        except Exception as e:
+            mb.showerror("Error",f"An error occurred while formatting data: {e}")
+
     def clear_window(self):
         for widget in self.root.winfo_children():
             widget.destroy()
@@ -259,12 +305,19 @@ class UserAuthApp:
             try:
                 with open('books.json', 'r') as file:
                     self.books = json.load(file)
-                    if tree:
-                        for book in self.books:
-                            tree.insert('', tk.END, values=(book['title'], book['author'], book['year'], book['category']))
             except json.JSONDecodeError:
                 mb.showerror("Error", "Error reading book data. Please contact support.")
+                self.books = [] # Clear self.books in case of error
 
+        # Clear existing data in the tree (whether or not there was an error)
+        if tree:
+            for i in tree.get_children():
+                tree.delete(i)
+
+        # Now safely insert the data (if any)
+        if tree:
+            for book in self.books:
+                tree.insert('', tk.END, values=(book['title'], book['author'], book['year'], book['category']))
     def logout_event(self):
         self.current_user = None
         self.show_login_window()
@@ -571,8 +624,8 @@ class UserAuthApp:
         # self.repw_entry.insert(0, self.editing_user['password'])
 
         # Save and Cancel buttons
-        tk.Button(self.root, text='Save Changes', command=self.save_edited_user).grid(row=7, columnspan=2, pady=5)
-        tk.Button(self.root, text='Cancel', command=self.manage_users_event).grid(row=8, columnspan=2, pady=5)
+        tk.Button(self.root, text='Save Changes', command=self.save_edited_user).grid(row=5, columnspan=2, pady=5)
+        tk.Button(self.root, text='Cancel', command=self.manage_users_event).grid(row=6, columnspan=2, pady=5)
 
     def save_edited_user(self):
         name = self.name_entry.get()
