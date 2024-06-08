@@ -1,8 +1,74 @@
 [
     {
-        "title": "name",
-        "author": "name ",
-        "year": "name",
-        "category": "name"
+        "title": "Pride and Prejudice",
+        "author": "Jane Austen",
+        "year": 1813,
+        "category": "fiction"
+    },
+    {
+        "title": "Alice's Adventures in Wonderland",
+        "author": "Lewis Carroll",
+        "year": 1865,
+        "category": "fiction"
+    },
+    {
+        "title": "Adventures of Huckleberry Finn",
+        "author": "Mark Twain",
+        "year": 1876,
+        "category": "fiction"
+    },
+    {
+        "title": "Emma",
+        "author": "Jane Austen",
+        "year": 1815,
+        "category": "fiction"
+    },
+    {
+        "title": "Frankenstein or The Modern Prometheus",
+        "author": "Mary Shelley",
+        "year": 1818,
+        "category": "fiction"
+    },
+    {
+        "title": "The Picture of Dorian Gray",
+        "author": "Oscar Wilde",
+        "year": 1890,
+        "category": "fiction"
+    },
+    {
+        "title": "Wuthering Heights",
+        "author": "Emily Brontë",
+        "year": 1847,
+        "category": "fiction"
+    },
+    {
+        "title": "Treasure Island",
+        "author": "Robert Louis Stevenson",
+        "year": 1880,
+        "category": "fiction"
+    },
+    {
+        "title": "Little Women",
+        "author": "Louisa May Alcott",
+        "year": 1848,
+        "category": "fiction"
+    },
+    {
+        "title": "A Tale of Two Cities",
+        "author": "Charles Dickens",
+        "year": 1800,
+        "category": "fiction"
+    },
+    {
+        "title": "A Christmas Carol",
+        "author": "Charles Dickens",
+        "year": 1843,
+        "category": "fiction"
+    },
+    {
+        "title": "Gulliver's Travels",
+        "author": "Jonathan Swift",
+        "year": 1726,
+        "category": "fiction"
     }
 ]

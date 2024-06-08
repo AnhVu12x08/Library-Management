@@ -9,8 +9,15 @@
     {
         "name": "admin",
         "dob": "2001-12-12",
-        "email": "admin",
+        "email": "admin@gmail.com",
         "password": "$2b$12$g98uWITDyoWp/Q8WIefbYO7lt7dQbCSWm27Y0y7zETvIML2efPwjS",
         "role": "admin"
+    },
+    {
+        "name": "anhvu",
+        "dob": "1234-12-12",
+        "email": "anhvu123@gmail.com",
+        "password": "$2b$12$LyROXbIsRWCIL04PCZ7OyO1U4rNQ/quIwWBJHf0aD6hTYmSy.pdYW",
+        "role": "user"
     }
 ]
