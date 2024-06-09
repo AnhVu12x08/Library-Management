@@ -565,6 +565,7 @@ class UserAuthApp:
         email = self.email_entry.get()
         password = self.pw_entry.get()
         re_password = self.repw_entry.get()
+        role = self.role_entry.get()
 
         # Validate form fields
         if not all([name, dob_str, email, password, re_password]):
@@ -605,7 +606,7 @@ class UserAuthApp:
             'dob': dob_str,
             'email': email,
             'password': hashed_password.decode('utf-8'),
-            'role': 'user'
+            'role': role
         }
         self.users.append(new_user)
         self.save_users(self.users)
@@ -645,6 +646,16 @@ class UserAuthApp:
         dob_str = self.dob_entry.get()
         email = self.email_entry.get()
         role = self.role_entry.get()
+        pw = self.pw_entry.get()
+        repw = self.repw_entry.get()
+        
+                # Validate password
+        if not self.validate_password(pw, repw):
+            mb.showerror("Error", "Passwords do not match.")
+            return
+
+        # Hash the password
+        hashed_password = self.hash_password(pw)
 
         # Validate form fields
         if not all([name, dob_str, email]):
@@ -697,4 +708,6 @@ if __name__ == "__main__":
     root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
     app = UserAuthApp(root)
     root.mainloop()
-
+    
+    
+    
