@@ -14,10 +14,10 @@
         "role": "admin"
     },
     {
-        "name": "anhvu",
-        "dob": "1234-12-12",
-        "email": "anhvu123@gmail.com",
-        "password": "$2b$12$LyROXbIsRWCIL04PCZ7OyO1U4rNQ/quIwWBJHf0aD6hTYmSy.pdYW",
+        "name": "anh vux",
+        "dob": "2001-12-12",
+        "email": "anhvu1@gmail.com",
+        "password": "$2b$12$1evIX7XXzG6jhTDFWNQZI.hnJ/om4hBVfItyk/2D6Myo7X1PYWhiW",
         "role": "user"
     }
 ]

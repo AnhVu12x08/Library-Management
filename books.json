@@ -12,12 +12,6 @@
         "category": "fiction"
     },
     {
-        "title": "Adventures of Huckleberry Finn",
-        "author": "Mark Twain",
-        "year": 1876,
-        "category": "fiction"
-    },
-    {
         "title": "Emma",
         "author": "Jane Austen",
         "year": 1815,
@@ -33,7 +27,7 @@
         "title": "The Picture of Dorian Gray",
         "author": "Oscar Wilde",
         "year": 1890,
-        "category": "fiction"
+        "category": "ccccc"
     },
     {
         "title": "Wuthering Heights",
@@ -70,5 +64,221 @@
         "author": "Jonathan Swift",
         "year": 1726,
         "category": "fiction"
+    },
+    {
+        "title": "Wuthering Heights",
+        "author": "Emily Brontë",
+        "year": 1847,
+        "category": "love"
+    },
+    {
+        "title": "The Great Gatsby",
+        "author": "F. Scott Fitzgerald",
+        "year": 1920,
+        "category": "love"
+    },
+    {
+        "title": "Ethan Frome",
+        "author": "Edith Wharton",
+        "year": 1910,
+        "category": "love"
+    },
+    {
+        "title": "Romeo and Juliet",
+        "author": "William Shakespeare",
+        "year": 1597,
+        "category": "love"
+    },
+    {
+        "title": "πολιτεία",
+        "author": "Πλάτων",
+        "year": 1554,
+        "category": "love"
+    },
+    {
+        "title": "Le Comte de Monte Cristo",
+        "author": "Alexandre Dumas",
+        "year": 1830,
+        "category": "love"
+    },
+    {
+        "title": "Anna Karenina",
+        "author": "Лев Толстой",
+        "year": 1876,
+        "category": "love"
+    },
+    {
+        "title": "Sonnets",
+        "author": "William Shakespeare",
+        "year": 1609,
+        "category": "love"
+    },
+    {
+        "title": "As You Like It",
+        "author": "William Shakespeare",
+        "year": 1734,
+        "category": "love"
+    },
+    {
+        "title": "The Importance of Being Earnest",
+        "author": "Oscar Wilde",
+        "year": 1893,
+        "category": "love"
+    },
+    {
+        "title": "Le petit prince",
+        "author": "Antoine de Saint-Exupéry",
+        "year": 1943,
+        "category": "love"
+    },
+    {
+        "title": "Συμπόσιον",
+        "author": "Πλάτων",
+        "year": 1559,
+        "category": "love"
+    },
+    {
+        "title": "Frankenstein or The Modern Prometheus",
+        "author": "Mary Shelley",
+        "year": 1818,
+        "category": "horror"
+    },
+    {
+        "title": "The Picture of Dorian Gray",
+        "author": "Oscar Wilde",
+        "year": 1890,
+        "category": "horror"
+    },
+    {
+        "title": "Dracula",
+        "author": "Bram Stoker",
+        "year": 1897,
+        "category": "horror"
+    },
+    {
+        "title": "The Strange Case of Dr. Jekyll and Mr. Hyde",
+        "author": "Robert Louis Stevenson",
+        "year": 1875,
+        "category": "horror"
+    },
+    {
+        "title": "Carmilla",
+        "author": "Joseph Sheridan Le Fanu",
+        "year": 1871,
+        "category": "horror"
+    },
+    {
+        "title": "The Great God Pan",
+        "author": "Arthur Machen",
+        "year": 1894,
+        "category": "horror"
+    },
+    {
+        "title": "Tales of Terror and Mystery",
+        "author": "Arthur Conan Doyle",
+        "year": 1963,
+        "category": "horror"
+    },
+    {
+        "title": "Brood of the Witch-Queen",
+        "author": "Sax Rohmer",
+        "year": 1924,
+        "category": "horror"
+    },
+    {
+        "title": "The Damned",
+        "author": "Algernon Blackwood",
+        "year": 2002,
+        "category": "horror"
+    },
+    {
+        "title": "Carrie",
+        "author": "Stephen King",
+        "year": 1974,
+        "category": "horror"
+    },
+    {
+        "title": "Herland",
+        "author": "Charlotte Perkins Gilman",
+        "year": 1915,
+        "category": "horror"
+    },
+    {
+        "title": "Misery",
+        "author": "Stephen King",
+        "year": 1978,
+        "category": "horror"
+    },
+    {
+        "title": "Invasió subtil i altres contes",
+        "author": "Pere Calders",
+        "year": 1978,
+        "category": "mistery"
+    },
+    {
+        "title": "Uma aventura no teatro",
+        "author": "Ana Maria Magalhães",
+        "year": 1987,
+        "category": "mistery"
+    },
+    {
+        "title": "The bird artist",
+        "author": "Howard Norman",
+        "year": 1994,
+        "category": "mistery"
+    },
+    {
+        "title": "Uma aventura em Evoramonte",
+        "author": "Ana Maria Magalhães",
+        "year": 1984,
+        "category": "mistery"
+    },
+    {
+        "title": "Uma aventura em Lisboa",
+        "author": "Ana Maria Magalhães",
+        "year": 1988,
+        "category": "mistery"
+    },
+    {
+        "title": "Uma aventura na cidade",
+        "author": "Ana Maria Magalhães",
+        "year": 1982,
+        "category": "mistery"
+    },
+    {
+        "title": "Uma aventura na escola",
+        "author": "Ana Maria Magalhães",
+        "year": 1984,
+        "category": "mistery"
+    },
+    {
+        "title": "Uma aventura no Ribatejo",
+        "author": "Ana Maria Magalhães",
+        "year": 1984,
+        "category": "mistery"
+    },
+    {
+        "title": "Uma aventura perigosa",
+        "author": "Ana Maria Magalhães",
+        "year": 1994,
+        "category": "mistery"
+    },
+    {
+        "title": "Uma Aventura nas férias de Natal",
+        "author": "Ana Maria Magalhães",
+        "year": 1982,
+        "category": "mistery"
+    },
+    {
+        "title": "Uma Aventura na falésia",
+        "author": "Isabel Alçada",
+        "year": 1983,
+        "category": "mistery"
+    },
+    {
+        "title": "Uma Aventura em Viagem",
+        "author": "Ana Maria Magalhães",
+        "year": 1983,
+        "category": "mistery"
     }
 ]

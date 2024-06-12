@@ -83,10 +83,10 @@ class UserAuthApp:
         # Search input field and button
         search_entry = tk.Entry(self.root, width=20)
         search_entry.grid(row=1, column=0, padx=5, pady=5)
-        tk.Button(self.root, text='Search', command=lambda: self.search_book_event(search_entry.get())).grid(row=1,
-                                                                                                             column=1,
-                                                                                                             padx=5,
-                                                                                                             pady=5)
+        tk.Button(self.root, text='Search', command=lambda: self.search_book_event()).grid(row=1,
+                                                                                           column=1,
+                                                                                           padx=5,
+                                                                                           pady=5)
 
         # Logout button
         tk.Button(self.root, text='Logout', command=self.logout_event).grid(row=1, column=2, padx=5, pady=5)
@@ -125,21 +125,22 @@ class UserAuthApp:
             tk.Button(self.root, text=text, command=command).grid(row=1, column=i, padx=5, pady=5)
         # Create Treeview widget to display book data
         columns = ("Title", "Author", "Year", "Category")
-        tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        tree.grid(row=2, column=0, columnspan=3, pady=5)
+        self.tree = ttk.Treeview(self.root, columns=columns, show='headings')
+        self.tree.grid(row=2, column=0, columnspan=3, pady=5)
 
         # Define headings
         for col in columns:
-            tree.heading(col, text=col)
+            self.tree.heading(col, text=col)
 
         # Load book data from books.json and insert into Treeview
-        self.load_books(tree)
+        self.load_books(self.tree)
 
     def fetch_category_data(self):
         category = self.category_entry.get().strip()
         if not category:
             mb.showerror("Error", "Please enter a category name.")
             return
+
         url = f"http://openlibrary.org/subjects/{category}.json"
         try:
             response = requests.get(url)
@@ -148,12 +149,14 @@ class UserAuthApp:
 
             # Process and format data immediately
             self.format_book_data(data)
+
+            # Update the Treeview after fetching data
             self.clear_window()
-            self.show_admin_window()
+            self.show_admin_window()  # Refresh the admin window to display new data
+
             mb.showinfo("Success", "Category data fetched and saved successfully.")
         except requests.RequestException as e:
             mb.showerror("Error", f"Failed to fetch data: {e}")
-
     def format_book_data(self, data):
         try:
             formatted_works = [
@@ -166,13 +169,23 @@ class UserAuthApp:
                 for work in data.get("works", [])
             ]
 
-            # Open books.json in write mode ('w') to overwrite previous data
-            with open("books.json", "w", encoding="utf-8") as f:
-                json.dump(formatted_works, f, indent=4, ensure_ascii=False)
+            # Append new data to existing data in books.json
+            self.append_to_json("books.json", formatted_works)
 
         except Exception as e:
             mb.showerror("Error", f"An error occurred while formatting data: {e}")
 
+    def append_to_json(self, file_path, new_data):
+        try:
+            with open(file_path, "r+", encoding="utf-8") as f:
+                try:
+                    data = json.load(f)
+                except json.JSONDecodeError:
+                    data = []  # File is empty or not valid JSON
+                f.seek(0)  # Move pointer to the beginning of the file
+                json.dump(data + new_data, f, indent=4, ensure_ascii=False)
+        except Exception as e:
+            mb.showerror("Error", f"An error occurred while appending data: {e}")
     def clear_window(self):
         for widget in self.root.winfo_children():
             widget.destroy()
@@ -299,29 +312,20 @@ class UserAuthApp:
 
         mb.showerror("Error", "Invalid email or password.")
 
-    def load_books(self, tree=None):
-        """Load books from the JSON file. Optionally populate a Treeview."""
-        if os.path.exists('books.json'):
-            try:
-                with open('books.json', 'r') as file:
-                    self.books = json.load(file)
-                    if tree:
-                        for book in self.books:
-                            tree.insert('', tk.END,
-                                        values=(book['title'], book['author'], book['year'], book['category']))
-            except json.JSONDecodeError:
-                mb.showerror("Error", "Error reading book data. Please contact support.")
-                self.books = []  # Clear self.books in case of error
+    def load_books(self, tree):
+        try:
+            with open("books.json", "r", encoding="utf-8") as f:
+                self.books = json.load(f)
 
-        # Clear existing data in the tree (whether or not there was an error)
-        if tree:
-            for i in tree.get_children():
-                tree.delete(i)
+                # Clear existing data in the Treeview
+                tree.delete(*tree.get_children())
 
-        # Now safely insert the data (if any)
-        if tree:
-            for book in self.books:
-                tree.insert('', tk.END, values=(book['title'], book['author'], book['year'], book['category']))
+                # Insert new data into the Treeview
+                for i, book in enumerate(self.books):
+                    tree.insert('', tk.END, values=(book['title'], book['author'], book['year'], book['category']))
+        except Exception as e:
+            mb.showerror("Error", f"An error occurred while loading books: {e}")
+
 
     def logout_event(self):
         self.current_user = None
@@ -331,7 +335,17 @@ class UserAuthApp:
         # Implement search functionality here
         # You can filter self.books based on search_query
         # and display the results in a new window or update the Treeview
-        mb.showinfo("Info", f"Searching for: {search_query}")
+        search_query = self.search_entry.get()
+        matching_books = [book for book in self.books if search_query in book['title'].lower()]
+        self.update_tree(matching_books)
+
+    def update_treeview(self, tree):
+        for row in tree.get_children():
+            tree.delete(row)
+
+        for book in self.books:
+            tree.insert('', tk.END,
+                        values=(book['title'], book['author'], book['year'], book['category']))
 
     def add_book_event(self):
         self.clear_window()
@@ -378,11 +392,23 @@ class UserAuthApp:
             'category': category
         }
 
-        self.books.append(new_book)
-        with open('books.json', 'w') as file:
-            json.dump(self.books, file, indent=4)
+        # Append new book to existing data in books.json
+        self.append_to_json("books.json", [new_book])
+
         mb.showinfo("Success", "Book added successfully")
         self.show_admin_window()
+
+    def append_to_json(self, file_path, new_data):
+        try:
+            with open(file_path, "r+", encoding="utf-8") as f:
+                try:
+                    data = json.load(f)
+                except json.JSONDecodeError:
+                    data = []  # File is empty or not valid JSON
+                f.seek(0)  # Move pointer to the beginning of the file
+                json.dump(data + new_data, f, indent=4, ensure_ascii=False)
+        except Exception as e:
+            mb.showerror("Error", f"An error occurred while appending data: {e}")
 
     def edit_book_event(self):
         self.clear_window()
@@ -648,14 +674,10 @@ class UserAuthApp:
         role = self.role_entry.get()
         pw = self.pw_entry.get()
         repw = self.repw_entry.get()
-        
-                # Validate password
+        # Validate password
         if not self.validate_password(pw, repw):
             mb.showerror("Error", "Passwords do not match.")
             return
-
-        # Hash the password
-        hashed_password = self.hash_password(pw)
 
         # Validate form fields
         if not all([name, dob_str, email]):
@@ -676,14 +698,17 @@ class UserAuthApp:
         except ValueError:
             mb.showerror("Error", "Invalid date format.")
             return
+        # Hash the password
+        hashed_password = self.hash_password(pw)
 
         # Update the user details
-        self.editing_user.update({'name': name, 'dob': dob_str, 'email': email, 'role': role})
+        self.editing_user.update(
+            {'name': name, 'dob': dob_str, 'email': email, 'role': role, 'password': hashed_password.decode('utf-8')})
 
         # Save the updated users list to the file
         with open('user.json', 'w') as file:
             json.dump(self.users, file, indent=4)
-
+        # self.save_edited_users(self.users)
         mb.showinfo("Success", "User details updated successfully")
         self.manage_users_event()
 
@@ -708,6 +733,5 @@ if __name__ == "__main__":
     root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
     app = UserAuthApp(root)
     root.mainloop()
-    
-    
-    
+
+
