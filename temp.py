@@ -85,8 +85,8 @@ class UserAuthApp:
         tk.Label(self.root, text='USER DASHBOARD', font=('Arial', 16)).grid(row=0, columnspan=3, pady=5)
 
         # Search input field and button
-        search_entry = tk.Entry(self.root, width=20)
-        search_entry.grid(row=1, column=0, padx=5, pady=5)
+        self.search_entry = tk.Entry(self.root, width=20)
+        self.search_entry.grid(row=1, column=0, padx=5, pady=5)
         tk.Button(self.root, text='Search', command=lambda: self.search_book_event()).grid(row=1,
                                                                                            column=1,
                                                                                            padx=5,
@@ -96,16 +96,16 @@ class UserAuthApp:
         tk.Button(self.root, text='Logout', command=self.logout_event).grid(row=1, column=2, padx=5, pady=5)
 
         # Create Treeview widget to display book data
-        columns = ("Title", "Author", "Year", "Category")
-        tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        tree.grid(row=2, column=0, columnspan=3, pady=5)
-
+        columns = ("ID", "Title", "Author", "Year", "Category")
+        self.book_tree = ttk.Treeview(self.root, columns=columns, show='headings')
+        self.book_tree.grid(row=2, column=0, columnspan=3, pady=5)
         # Define headings
         for col in columns:
-            tree.heading(col, text=col)
+            self.book_tree.heading(col, text=col)
+            self.book_tree.column(col, width=100)
 
         # Load book data from books.json and insert into Treeview
-        self.load_books(tree)
+        self.load_books(self.book_tree)
 
     def show_admin_window(self):
         self.clear_window()
@@ -131,17 +131,34 @@ class UserAuthApp:
         for i, (text, command) in enumerate(admin_buttons):
             tk.Button(self.root, text=text, command=command).grid(row=1, column=i, padx=5, pady=5)
 
-        # Create Treeview widget to display book data
-        columns = ("Title", "Author", "Year", "Category")
-        self.tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        self.tree.grid(row=2, column=0, columnspan=3, pady=5)
+        # Create Treeview widget to display book data **only once**
+        columns = ("ID", "Title", "Author", "Year", "Category")
+        self.book_tree = ttk.Treeview(self.root, columns=columns, show='headings')
+        self.book_tree.grid(row=2, column=0, columnspan=3, pady=5)
 
         # Define headings
         for col in columns:
-            self.tree.heading(col, text=col)
+            self.book_tree.heading(col, text=col)
+            self.book_tree.column(col, width=100)
 
         # Load book data from books.json and insert into Treeview
-        self.load_books(self.tree)  # Pass the tree to load_books
+        self.load_books(self.book_tree)
+
+    # --- Helper function to clear and create widgets ---
+    def clear_and_create_widgets(self, title, command_select, command_cancel):
+        # Destroy specific widgets
+        for widget in self.root.winfo_children():
+            if isinstance(widget, (tk.Label, tk.Button, tk.Entry)):  # Include tk.Entry
+                widget.destroy()
+
+        # Re-create the label and buttons
+        tk.Label(self.root, text=title, font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
+        tk.Button(self.root, text='Select Book', command=command_select).grid(row=5, column=0, pady=5)
+        tk.Button(self.root, text='Cancel', command=command_cancel).grid(row=5, column=1, pady=5)
+
+        # Update the Treeview
+        self.book_tree.delete(*self.book_tree.get_children())
+        self.load_books(self.book_tree)
 
     def fetch_category_data(self):
         category = self.category_entry.get().strip()
@@ -332,29 +349,53 @@ class UserAuthApp:
 
                 # Insert new data into the Treeview
                 for i, book in enumerate(self.books):
-                    tree.insert('', tk.END, values=(book['title'], book['author'], book['year'], book['category']))
+                    tree.insert('', tk.END, values=(i, book['title'], book['author'], book['year'], book['category']))
         except Exception as e:
             mb.showerror("Error", f"An error occurred while loading books: {e}")
 
     def logout_event(self):
         self.current_user = None
         self.show_login_window()
-
+        '''
     def search_book_event(self, search_query):
         # Implement search functionality here
         # You can filter self.books based on search_query
         # and display the results in a new window or update the Treeview
+
+
         search_query = self.search_entry.get()
         matching_books = [book for book in self.books if search_query in book['title'].lower()]
         self.update_tree(matching_books)
+        '''
+
+    def search_book_event(self):
+        search_query = self.search_entry.get().lower()  # Lấy nội dung tìm kiếm và chuyển về chữ thường
+        if not search_query:
+            # Nếu không có nội dung tìm kiếm, hiển thị lại toàn bộ danh sách sách
+            self.update_treeview(self.book_tree)  # Assuming you want to update the Treeview
+            return
+
+        matching_books = []
+        for book in self.books:
+            # Kiểm tra nội dung tìm kiếm có tồn tại trong title, author, year, category hay không
+            if (
+                    search_query in book['title'].lower()
+                    or search_query in book['author'].lower()
+                    or search_query in str(book['year'])
+                    or search_query in book['category'].lower()
+            ):
+                matching_books.append(book)
+
+        # Xóa dữ liệu hiện tại trong Treeview và hiển thị kết quả tìm kiếm
+        self.book_tree.delete(*self.book_tree.get_children())
+        for i, book in enumerate(matching_books):
+            self.book_tree.insert('', tk.END, values=(i, book['title'], book['author'], book['year'], book['category']))
 
     def update_treeview(self, tree):
-        for row in tree.get_children():
-            tree.delete(row)
+        self.book_tree.delete(*self.book_tree.get_children())
 
-        for book in self.books:
-            tree.insert('', tk.END,
-                        values=(book['title'], book['author'], book['year'], book['category']))
+        for i, book in enumerate(self.books):
+            tree.insert('', tk.END, values=(i, book['title'], book['author'], book['year'], book['category']))
 
     def add_book_event(self):
         self.clear_window()
@@ -420,27 +461,7 @@ class UserAuthApp:
             mb.showerror("Error", f"An error occurred while appending data: {e}")
 
     def edit_book_event(self):
-        self.clear_window()
-        tk.Label(self.root, text='EDIT BOOK INFO', font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
-
-        # Create Treeview widget to display book data
-        columns = ("ID", "Title", "Author", "Year", "Category")
-        self.book_tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        self.book_tree.grid(row=1, column=0, columnspan=2, pady=5)
-
-        # Define headings
-        for col in columns:
-            self.book_tree.heading(col, text=col)
-            self.book_tree.column(col, width=100)
-
-        # Load book data from books.json and insert into Treeview
-        self.load_books(self.book_tree)  # Pass the book_tree to load_books
-
-        # Select Book button
-        tk.Button(self.root, text='Select Book', command=self.select_book_to_edit).grid(row=2, column=0, pady=5)
-
-        # Cancel button
-        tk.Button(self.root, text='Cancel', command=self.show_admin_window).grid(row=2, column=1, pady=5)
+        self.clear_and_create_widgets('EDIT BOOK INFO', self.select_book_to_edit, self.show_admin_window)
 
     def select_book_to_edit(self):
         selected_item = self.book_tree.selection()
@@ -464,8 +485,9 @@ class UserAuthApp:
         self.category_entry.insert(0, self.editing_book['category'])
 
         # Save and Cancel buttons
-        tk.Button(self.root, text='Save Changes', command=self.save_edited_book).grid(row=5, columnspan=2, pady=5)
-        tk.Button(self.root, text='Cancel', command=self.show_admin_window).grid(row=6, columnspan=2, pady=5)
+        tk.Button(self.root, text='Save Changes', command=self.save_edited_book).grid(row=7, column=5, columnspan=2,
+                                                                                      pady=5)
+        tk.Button(self.root, text='Cancel', command=self.show_admin_window).grid(row=8, column=5, columnspan=2, pady=5)
 
     def save_edited_book(self):
         title = self.title_entry.get()
@@ -483,38 +505,23 @@ class UserAuthApp:
         self.editing_book['year'] = int(self.year_entry.get())  # Assuming year is an integer
         self.editing_book['category'] = self.category_entry.get()
 
+        # Save the updated books list to the file
+        with open('books.json', 'w') as file:
+            json.dump(self.books, file, indent=4)
+        mb.showinfo('Info', 'Delete success', command=self.show_admin_window)
+
         # Update the Treeview
         self.book_tree.delete(*self.book_tree.get_children())  # Clear existing data
         for i, book in enumerate(self.books):
             self.book_tree.insert('', tk.END, values=(i, book['title'], book['author'], book['year'], book['category']))
-
+        # mb.showinfo("Success", "Book details updated successfully")
         # Show admin window
-        self.show_admin_window()
+        # self.show_admin_window()
 
     # --- Delete Book Functionality ---
 
     def delete_book_event(self):
-        self.clear_window()
-        tk.Label(self.root, text='DELETE BOOK', font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
-
-        # Create Treeview widget to display book data
-        columns = ("ID", "Title", "Author", "Year", "Category")
-        self.book_tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        self.book_tree.grid(row=1, column=0, columnspan=2, pady=5)
-
-        # Define headings
-        for col in columns:
-            self.book_tree.heading(col, text=col)
-            self.book_tree.column(col, width=100)
-
-        # Load book data from books.json and insert into Treeview
-        self.load_books(self.book_tree)  # Pass the book_tree to load_books
-
-        # Select Book button
-        tk.Button(self.root, text='Select Book', command=self.select_book_to_delete).grid(row=2, column=0, pady=5)
-
-        # Cancel button
-        tk.Button(self.root, text='Cancel', command=self.show_admin_window).grid(row=2, column=1, pady=5)
+        self.clear_and_create_widgets('DELETE BOOK', self.select_book_to_delete, self.show_admin_window)
 
     def select_book_to_delete(self):
         selected_item = self.book_tree.selection()
@@ -720,8 +727,8 @@ class UserAuthApp:
         hashed_password = self.hash_password(pw)
 
         # Update the user details
-        self.editing_user.update({'name': name, 'dob': dob_str, 'email': email, 'role': role, 'password': hashed_password.decode('utf-8')})
-
+        self.editing_user.update(
+            {'name': name, 'dob': dob_str, 'email': email, 'role': role, 'password': hashed_password.decode('utf-8')})
 
         # Save the updated users list to the file
         self.save_users(self.users)
@@ -748,3 +755,4 @@ if __name__ == "__main__":
     root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
     app = UserAuthApp(root)
     root.mainloop()
+

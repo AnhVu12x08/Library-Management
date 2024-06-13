@@ -1,9 +1,9 @@
 [
     {
-        "name": "anhvu",
+        "name": "Anh V\u0169",
         "dob": "2002-12-12",
         "email": "anhvu@gmail.com",
-        "password": "$2b$12$te4oBYKfRC6/S7Bki48A7OWhG6vOxQHhJfPBTeMVXL/Ez2tXzM9Su",
+        "password": "$2b$12$2.fzO90NouNSP0E3TxaYseZr2YIjHch49iHMZIopHah.JjqnnkXdK",
         "role": "user"
     },
     {
@@ -14,10 +14,17 @@
         "role": "admin"
     },
     {
-        "name": "anh vux",
-        "dob": "2001-12-12",
-        "email": "anhvu1@gmail.com",
-        "password": "$2b$12$1evIX7XXzG6jhTDFWNQZI.hnJ/om4hBVfItyk/2D6Myo7X1PYWhiW",
+        "name": "Ho\u00e0ng Qu\u00e2n",
+        "dob": "2001-12-22",
+        "email": "hoangquan@gmail.com",
+        "password": "$2b$12$rrxZpJ/vK3EJBU2/aAxoH.PnTj9QOVoLrXL9geKlCP55VFGCf7jNy",
+        "role": "user"
+    },
+    {
+        "name": "Ho\u00e0ng Th\u00e1i",
+        "dob": "2004-12-12",
+        "email": "hoangthai@gmail.com",
+        "password": "$2b$12$K0VwfBN6xmlJyLbms4EGU./80.DjZO6rx0EpLPs6ul9uGKtU1GY9i",
         "role": "user"
     }
 ]
