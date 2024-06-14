@@ -8,7 +8,6 @@ from datetime import datetime
 import tkinter.messagebox as mb
 import requests
 
-
 class UserAuthApp:
     def __init__(self, root):
         self.root = root
@@ -20,11 +19,15 @@ class UserAuthApp:
         self.current_user = None
         self.show_login_window()
 
+        # Load data from files on startup
+        self.load_books()
+        self.load_users()
+
     def show_login_window(self):
         self.clear_window()
 
         frame = tk.Frame(self.root)
-        frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER, width=420, height= 400)
+        frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER, width=420, height=400)
 
         tk.Label(frame, text='Login', font=('Arial', 24)).grid(row=0, columnspan=2, pady=10)
 
@@ -49,7 +52,7 @@ class UserAuthApp:
         self.clear_window()
 
         frame = tk.Frame(self.root)
-        frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER,height=500, width=600)
+        frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER, height=500, width=600)
 
         tk.Label(frame, text='Register Account', font=('Arial', 24)).grid(row=0, columnspan=2, pady=10)
 
@@ -88,25 +91,25 @@ class UserAuthApp:
         self.clear_window()
 
         # User Dashboard Label
-        tk.Label(self.root, text='USER DASHBOARD', font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0', borderwidth=2,
-                 relief='solid').grid(row=0, column=0, columnspan=3, pady=20, padx=10, sticky='nsew')
+        tk.Label(self.root, text='USER DASHBOARD', font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0',
+                 borderwidth=2, relief='solid').grid(row=0, columnspan=5, padx=10, pady=10, sticky='ew')
 
         # Search input field
         self.search_entry = tk.Entry(self.root, width=30, font=('Arial', 13))
-        self.search_entry.place(x=20, y=70, width=300, height=30)  # Adjust x, y coordinates as needed
+        self.search_entry.place(x=20, y=80, width=300, height=30)  # Adjust x, y coordinates as needed
 
         # Search button
         search_button = tk.Button(self.root, text='Search', command=self.search_book_event, font=('Arial', 13))
-        search_button.place(x=350, y=70, width=100, height=30)  # Adjust x, y coordinates as needed
+        search_button.place(x=350, y=80, width=100, height=30)  # Adjust x, y coordinates as needed
 
         # Logout button
         logout_button = tk.Button(self.root, text='Logout', command=self.logout_event, font=('Arial', 13))
-        logout_button.place(x=1000, y=70, width=100, height=30)  # Adjust x, y coordinates as needed
+        logout_button.place(x=1000, y=80, width=100, height=30)  # Adjust x, y coordinates as needed
 
         # Create Treeview widget to display book data
         columns = ("Stt", "Title", "Author", "Year", "Category")
         self.book_tree = ttk.Treeview(self.root, columns=columns, show='headings', height=10)
-        self.book_tree.grid(row=3, column=0, columnspan=3, pady=20, padx=20, sticky='nsew')
+        self.book_tree.place(x=20, y=130)  #, columnspan=3, pady=20, padx=20, sticky='nsew')
 
         # Define headings and set column widths
         for col in columns:
@@ -114,10 +117,10 @@ class UserAuthApp:
             self.book_tree.column(col, width=150)
 
         # Configure grid columns for equal weight
-        self.root.grid_rowconfigure(3, weight=1)  # Make row 3 (containing Treeview) expandable
-        root.grid_columnconfigure(0, weight=1)
-        root.grid_columnconfigure(1, weight=1)
-        root.grid_columnconfigure(2, weight=1)
+        # self.root.grid_rowconfigure(3, weight=1)  # Make row 3 (containing Treeview) expandable
+        # self.root.grid_columnconfigure(0, weight=1)
+        # self.root.grid_columnconfigure(1, weight=1)
+        # self.root.grid_columnconfigure(2, weight=1)
 
         # Load book data from books.json and insert into Treeview
         self.load_books(self.book_tree)
@@ -148,7 +151,6 @@ class UserAuthApp:
         self.category_entry = tk.Entry(self.root, width=30, font=('Arial', 12))
         self.category_entry.place(x=180, y=370, width=300, height=30)
         tk.Button(self.root, text='Fetch Category Data', command=self.fetch_category_data).place(x=500, y=370,width=130, height=30)
-        # Admin buttons
 
         columns = ("Stt", "Title", "Author", "Year", "Category")
         self.book_tree = ttk.Treeview(self.root, columns=columns, show='headings', height=10)
@@ -160,27 +162,30 @@ class UserAuthApp:
             self.book_tree.column(col, width=250)
 
         # Configure grid columns for equal weight
-        root.grid_columnconfigure(0, weight=1)
-        root.grid_columnconfigure(1, weight=1)
-        root.grid_columnconfigure(2, weight=1)
+        self.root.grid_columnconfigure(0, weight=1)
+        self.root.grid_columnconfigure(1, weight=1)
+        self.root.grid_columnconfigure(2, weight=1)
 
         # Load book data from books.json and insert into Treeview
         self.load_books(self.book_tree)
 
-
     def clear_and_create_widgets(self, title, command_select, command_cancel):
-        for widget in self.root.winfo_children():
-            if isinstance(widget, (tk.Label, tk.Button, tk.Entry)):  # Include tk.Entry
-                widget.destroy()
+        self.clear_window()
 
-        # Re-create the label and buttons
         tk.Label(self.root, text=title, font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0', borderwidth=2,
                  relief='solid').grid(row=0, columnspan=2, pady=5, padx=20, sticky='n')
         tk.Button(self.root, text='Select Book',font=('Arial',13), command=command_select).grid(row=5, column=0, pady=5)
         tk.Button(self.root, text='Cancel', font=('Arial',13), command=command_cancel).grid(row=5, column=1, pady=5)
 
-        # Update the Treeview
-        self.book_tree.delete(*self.book_tree.get_children())
+        # Create a new Treeview for the operation
+        columns = ("Stt", "Title", "Author", "Year", "Category")
+        self.book_tree = ttk.Treeview(self.root, columns=columns, show='headings', height=10)
+        self.book_tree.grid(row=1, column=0, columnspan=2, pady=20, padx=20, sticky='nsew')
+
+        for col in columns:
+            self.book_tree.heading(col, text=col)
+            self.book_tree.column(col, width=200)
+
         self.load_books(self.book_tree)
 
     def fetch_category_data(self):
@@ -249,11 +254,6 @@ class UserAuthApp:
         age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
         return age >= 5
 
-    #def is_valid_year(year_str):
-    #    if len(year_str) == 4 and year_str.isdigit():
-    #        return True
-    #    return False
-
     def validate_password(self, password, re_password):
         return password == re_password
 
@@ -263,8 +263,6 @@ class UserAuthApp:
 
     def check_password(self, stored_password, provided_password):
         return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
-
-
 
     def register_event(self):
         # Retrieve data from entry fields
@@ -325,14 +323,13 @@ class UserAuthApp:
 
     def load_users(self):
         """Load users from the JSON file."""
-        if os.path.exists('user.json'):
-            try:
-                with open('user.json', 'r') as file:
-                    return json.load(file)
-            except json.JSONDecodeError:
-                mb.showerror("Error", "Error reading user data. Please contact support.")
-                return []
-        return []
+        try:
+            with open('user.json', 'r') as file:
+                self.users = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            # Handle the case where the file doesn't exist or is invalid
+            self.users = []
+        return self.users  # Return the users list
 
     def save_users(self, users):
         """Save users to the JSON file."""
@@ -343,19 +340,14 @@ class UserAuthApp:
         # Retrieve data from entry fields
         email = self.login_email.get()
         password = self.login_pw.get()
-        # label = tk.Label(self.root, text = 'debg')
+
         # Validate form fields
         if not all([email, password]):
             mb.showerror("Error", "Please fill in all fields.")
             return
 
         # Load existing user data
-        try:
-            with open('user.json', 'r') as file:
-                users = json.load(file)
-        except FileNotFoundError:
-            mb.showerror("Error", "No user data found.")
-            return
+        users = self.load_users()
 
         # Check email and password
         for user in users:
@@ -369,19 +361,18 @@ class UserAuthApp:
 
         mb.showerror("Error", "Invalid email or password.")
 
-    def load_books(self, tree):
+    def load_books(self, tree=None):
+        """Load books from the JSON file."""
         try:
             with open("books.json", "r", encoding="utf-8") as f:
                 self.books = json.load(f)
+                if tree:  # If a Treeview is provided, update it
+                    self.update_treeview(tree)
+        except (FileNotFoundError, json.JSONDecodeError):
+            # Handle the case where the file doesn't exist or is invalid
+            self.books = []
+        return self.books  # Return the books list
 
-                # Clear existing data in the Treeview
-                tree.delete(*tree.get_children())
-
-                # Insert new data into the Treeview
-                for i, book in enumerate(self.books):
-                    tree.insert('', tk.END, values=(i, book['title'], book['author'], book['year'], book['category']))
-        except Exception as e:
-            mb.showerror("Error", f"An error occurred while loading books: {e}")
 
     def logout_event(self):
         self.current_user = None
@@ -389,31 +380,27 @@ class UserAuthApp:
 
 
     def search_book_event(self):
-        search_query = self.search_entry.get().lower()  # Lấy nội dung tìm kiếm và chuyển về chữ thường
+        search_query = self.search_entry.get().lower()
         if not search_query:
-            # Nếu không có nội dung tìm kiếm, hiển thị lại toàn bộ danh sách sách
-            self.update_treeview(self.book_tree)  # Assuming you want to update the Treeview
+            self.load_books(self.book_tree)  # Reload all books if the search query is empty
             return
 
         matching_books = []
         for book in self.books:
-            # Kiểm tra nội dung tìm kiếm có tồn tại trong title, author, year, category hay không
             if (
-                    search_query in book['title'].lower()
-                    or search_query in book['author'].lower()
-                    or search_query in str(book['year'])
-                    or search_query in book['category'].lower()
+                search_query in book['title'].lower()
+                or search_query in book['author'].lower()
+                or search_query in str(book['year'])
+                or search_query in book['category'].lower()
             ):
                 matching_books.append(book)
 
-        # Xóa dữ liệu hiện tại trong Treeview và hiển thị kết quả tìm kiếm
         self.book_tree.delete(*self.book_tree.get_children())
         for i, book in enumerate(matching_books):
             self.book_tree.insert('', tk.END, values=(i, book['title'], book['author'], book['year'], book['category']))
 
     def update_treeview(self, tree):
-        self.book_tree.delete(*self.book_tree.get_children())
-
+        tree.delete(*tree.get_children())
         for i, book in enumerate(self.books):
             tree.insert('', tk.END, values=(i, book['title'], book['author'], book['year'], book['category']))
 
@@ -422,19 +409,15 @@ class UserAuthApp:
         tk.Label(self.root, text='ADD NEW BOOK', font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0', borderwidth=2,
                  relief='solid').grid(row=0, columnspan=2, pady=5, padx=20, sticky='n')
 
-        # Book form
         self.create_book_form()
         button_font = ('Arial',13)
-        # Save and Cancel buttons
         tk.Button(self.root, text='Save',font=button_font, command=self.save_book, height=1,width=10).grid(row=7, columnspan=2, pady=5)
         tk.Button(self.root, text='Cancel',font=button_font, command=self.show_admin_window).grid(row=8, columnspan=2, pady=5)
 
     def create_book_form(self):
-        # Configure grid weight for centering
         self.root.grid_columnconfigure(0, weight=1)
         self.root.grid_columnconfigure(1, weight=1)
 
-        # Define font and padding
         label_font = ('Arial', 14)
         entry_font = ('Arial', 14)
         pady = 10
@@ -462,8 +445,15 @@ class UserAuthApp:
         year = self.year_entry.get()
         category = self.category_entry.get()
 
+        # Basic validation
         if not all([title, author, year, category]):
             mb.showerror("Error", "Please fill in all fields.")
+            return
+
+        try:
+            year = int(year)  # Ensure year is an integer
+        except ValueError:
+            mb.showerror("Error", "Invalid year format. Please enter a number.")
             return
 
         new_book = {
@@ -473,23 +463,18 @@ class UserAuthApp:
             'category': category
         }
 
-        # Append new book to existing data in books.json
-        self.append_to_json("books.json", [new_book])
-
+        self.books.append(new_book)
+        self.save_books_to_file()
         mb.showinfo("Success", "Book added successfully")
         self.show_admin_window()
 
-    def append_to_json(self, file_path, new_data):
+    def save_books_to_file(self):
         try:
-            with open(file_path, "r+", encoding="utf-8") as f:
-                try:
-                    data = json.load(f)
-                except json.JSONDecodeError:
-                    data = []  # File is empty or not valid JSON
-                f.seek(0)  # Move pointer to the beginning of the file
-                json.dump(data + new_data, f, indent=4, ensure_ascii=False)
+            with open("books.json", "w", encoding="utf-8") as f:
+                json.dump(self.books, f, indent=4, ensure_ascii=False)
         except Exception as e:
-            mb.showerror("Error", f"An error occurred while appending data: {e}")
+            mb.showerror("Error", f"An error occurred while saving the book: {e}")
+
 
     def edit_book_event(self):
         self.clear_and_create_widgets('EDIT BOOK INFO', self.select_book_to_edit, self.show_admin_window)
@@ -532,20 +517,21 @@ class UserAuthApp:
             mb.showerror("Error", "Please fill in all fields.")
             return
 
+        try:
+            year = int(year)
+        except ValueError:
+            mb.showerror("Error", "Invalid year format. Please enter a number.")
+            return
+
         # Update the book in the self.books list
-        self.editing_book['title'] = self.title_entry.get()
-        self.editing_book['author'] = self.author_entry.get()
-        self.editing_book['year'] = int(self.year_entry.get())  # Assuming year is an integer
-        self.editing_book['category'] = self.category_entry.get()
+        self.editing_book['title'] = title
+        self.editing_book['author'] = author
+        self.editing_book['year'] = year
+        self.editing_book['category'] = category
 
-        # Save the updated books list to the file
-        with open('books.json', 'w') as file:
-            json.dump(self.books, file, indent=4)
-
-        mb.showinfo('Success', 'Book edit successfully')
+        self.save_books_to_file()
+        mb.showinfo('Success', 'Book edited successfully')
         self.show_admin_window()
-
-    # --- Delete Book Functionality ---
 
     def delete_book_event(self):
         self.clear_and_create_widgets('DELETE BOOK', self.select_book_to_delete, self.show_admin_window)
@@ -559,74 +545,60 @@ class UserAuthApp:
         book_id = int(self.book_tree.item(selected_item[0], 'values')[0])
         if mb.askyesno("Confirm Delete", f"Are you sure you want to delete '{self.books[book_id]['title']}'?"):
             del self.books[book_id]
-            # Update the book list in books.json
-            self.update_books_json()
+
+            self.save_books_to_file()
             mb.showinfo("Success", "Book deleted successfully")
-            self.show_admin_window()  # Refresh the admin window
-
-    def update_books_json(self):
-        # Update the books.json file
-        try:
-            with open("books.json", "w", encoding="utf-8") as f:
-                json.dump(self.books, f, indent=4, ensure_ascii=False)
-        except Exception as e:
-            mb.showerror("Error", f"An error occurred while updating books.json: {e}")
-
-    # --- Manage Users Functionality ---
+            self.show_admin_window()
 
     def manage_users_event(self):
         self.clear_window()
 
-        # Title
         title_label = tk.Label(self.root, text='MANAGE USERS', font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0',
                                borderwidth=2, relief='solid')
         title_label.grid(row=0, columnspan=2, pady=5, padx=20, sticky='n')
 
-        # Create Treeview widget to display user data
         columns = ("Stt", "Name", "Email", "Role")
         self.user_tree = ttk.Treeview(self.root, columns=columns, show='headings')
         self.user_tree.grid(row=1, column=0, columnspan=2, pady=20, padx=20)
 
-        # Define headings
         for col in columns:
             self.user_tree.heading(col, text=col)
             self.user_tree.column(col, width=200)
 
-        # Load user data from user.json and insert into Treeview
-        self.users = self.load_users()
-        for i, user in enumerate(self.users):
-            self.user_tree.insert('', tk.END, values=(i, user['name'], user['email'], user['role']))
+        self.load_users_into_treeview()
 
-        # Buttons
         button_font = ('Arial', 13)
         button_padx = 20
         button_pady = 5
 
-        add_button = tk.Button(self.root, text='Add User', font=button_font, command=self.add_user_event, height = 1, width = 22)
+        add_button = tk.Button(self.root, text='Add User', font=button_font, command=self.add_user_event, height=1, width=22)
         add_button.grid(row=2, column=0, pady=button_pady, padx=button_padx, sticky='e')
 
-        edit_button = tk.Button(self.root, text='Edit User', font=button_font, command=self.edit_user_event, height = 1, width = 22)
+        edit_button = tk.Button(self.root, text='Edit User', font=button_font, command=self.edit_user_event, height=1, width=22)
         edit_button.grid(row=2, column=1, pady=button_pady, padx=button_padx, sticky='w')
 
-        delete_button = tk.Button(self.root, text='Delete User', font=button_font, command=self.delete_user_event, height = 1, width = 22)
+        delete_button = tk.Button(self.root, text='Delete User', font=button_font, command=self.delete_user_event, height=1, width=22)
         delete_button.grid(row=3, column=0, pady=button_pady, padx=button_padx, sticky='e')
 
         back_button = tk.Button(self.root, text='Back to Admin Dashboard', font=button_font,
-                                command=self.show_admin_window, height = 1, width = 22)
+                                command=self.show_admin_window, height=1, width=22)
         back_button.grid(row=3, column=1, pady=button_pady, padx=button_padx, sticky='w')
+
+    def load_users_into_treeview(self):
+        self.user_tree.delete(*self.user_tree.get_children())
+        for i, user in enumerate(self.users):
+            self.user_tree.insert('', tk.END, values=(i, user['name'], user['email'], user['role']))
 
     def add_user_event(self):
         self.clear_window()
         tk.Label(self.root, text='ADD NEW USER', font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0', borderwidth=2,
                  relief='solid').grid(row=0, columnspan=2, pady=5, padx=20, sticky='n')
 
-        # User form
         self.create_user_form()
         button_font = ('Arial', 13)
+        tk.Button(self.root, text='Save', font=button_font, command=self.save_user, height=1, width=10).grid(row=7, columnspan=2, pady=5)
+        tk.Button(self.root, text='Cancel', font=button_font, command=self.manage_users_event).grid(row=8, columnspan=2, pady=5)
 
-        # Save and Cancel buttons
-        tk.Button(self.root, text='Save', font= button_font, command=self.save_user, height=1, width=10).grid(row=7, columnspan=2, pady=5)  # Moved to row 7
-        tk.Button(self.root, text='Cancel', font = button_font, command=self.manage_users_event).grid(row=8, columnspan=2, pady=5)
 
     def create_user_form(self):
         # Configure grid weight for centering
@@ -786,6 +758,7 @@ class UserAuthApp:
         except ValueError:
             mb.showerror("Error", "Invalid date format.")
             return
+
         hashed_password = self.hash_password(pw)
 
         # Update the user details
