@@ -72,87 +72,75 @@
         "category": "fiction"
     },
     {
-        "title": "Wuthering Heights",
-        "author": "Emily Brontë",
-        "year": 1847,
-        "category": "love"
+        "title": "Frankenstein or The Modern Prometheus",
+        "author": "Mary Shelley",
+        "year": 1818,
+        "category": "science"
     },
     {
-        "title": "The Great Gatsby",
-        "author": "F. Scott Fitzgerald",
-        "year": 1920,
-        "category": "love"
+        "title": "Brave New World",
+        "author": "Aldous Huxley",
+        "year": 1932,
+        "category": "science"
     },
     {
-        "title": "Ethan Frome",
-        "author": "Edith Wharton",
-        "year": 1910,
-        "category": "love"
+        "title": "The Invisible Man",
+        "author": "H. G. Wells",
+        "year": 1897,
+        "category": "science"
     },
     {
-        "title": "Romeo and Juliet",
-        "author": "William Shakespeare",
-        "year": 1597,
-        "category": "love"
+        "title": "On the Nature of the Universe",
+        "author": "Titus Lucretius Carus",
+        "year": 1486,
+        "category": "science"
     },
     {
-        "title": "πολιτεία",
-        "author": "Πλάτων",
-        "year": 1554,
-        "category": "love"
+        "title": "Houghton Mifflin Science California",
+        "author": "Houghton Mifflin Company Staff",
+        "year": 2006,
+        "category": "science"
     },
     {
-        "title": "Le Comte de Monte Cristo",
-        "author": "Alexandre Dumas",
-        "year": 1830,
-        "category": "love"
+        "title": "Le Tour du Monde en Quatre-Vingts Jours",
+        "author": "Jules Verne",
+        "year": 1873,
+        "category": "science"
     },
     {
-        "title": "Anna Karenina",
-        "author": "Лев Толстой",
-        "year": 1876,
-        "category": "love"
+        "title": "History",
+        "author": "Herodotus",
+        "year": 1494,
+        "category": "science"
     },
     {
-        "title": "Sonnets",
-        "author": "William Shakespeare",
-        "year": 1609,
-        "category": "love"
+        "title": "Houghton Mifflin Science Leveled Readers",
+        "author": "Houghton Mifflin Company Staff",
+        "year": 2005,
+        "category": "science"
     },
     {
-        "title": "As You Like It",
-        "author": "William Shakespeare",
-        "year": 1734,
-        "category": "love"
+        "title": "[William Wheeler Hubbell, authorized to apply for patents.]",
+        "author": "United States. Congress. Senate. Committee on Patents",
+        "year": 1858,
+        "category": "science"
     },
     {
-        "title": "The Importance of Being Earnest",
-        "author": "Oscar Wilde",
-        "year": 1893,
-        "category": "love"
+        "title": "The Island of Dr. Moreau",
+        "author": "H. G. Wells",
+        "year": 1896,
+        "category": "science"
     },
     {
-        "title": "Le petit prince",
-        "author": "Antoine de Saint-Exupéry",
-        "year": 1943,
-        "category": "love"
+        "title": "The principall navigations, voiages, and discoveries of the English nations",
+        "author": "Richard Hakluyt",
+        "year": 1589,
+        "category": "science"
     },
     {
-        "title": "Συμπόσιον",
-        "author": "Πλάτων",
-        "year": 1559,
-        "category": "love"
-    },
-    {
-        "title": "name",
-        "author": "name",
-        "year": "name",
-        "category": "name"
-    },
-    {
-        "title": "test",
-        "author": "TEST",
-        "year": "TEST",
-        "category": "TEST"
+        "title": "On the origin of species by means of natural selection",
+        "author": "Charles Darwin",
+        "year": 1859,
+        "category": "science"
     }
 ]

@@ -24,7 +24,7 @@ class UserAuthApp:
         self.clear_window()
 
         frame = tk.Frame(self.root)
-        frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER, width=420, height= 400)
 
         tk.Label(frame, text='Login', font=('Arial', 24)).grid(row=0, columnspan=2, pady=10)
 
@@ -38,8 +38,10 @@ class UserAuthApp:
 
         tk.Button(frame, text='Login', font=('Arial', 16), command=self.login_event).grid(row=3, columnspan=2, pady=10)
 
-        tk.Label(frame, text='New user?', font=('Arial', 16)).grid(row=4, columnspan=2, pady=10)
-        tk.Button(frame, text='Register', font=('Arial', 16), command=self.show_register_window).grid(row=5,
+        ttk.Separator(frame, orient='horizontal').grid(row=4, columnspan=3, sticky='ew', pady=10)
+
+        tk.Label(frame, text='New user?', font=('Arial', 16)).grid(row=5, columnspan=2, pady=10)
+        tk.Button(frame, text='Register', font=('Arial', 16), command=self.show_register_window).grid(row=6,
                                                                                                       columnspan=2,
                                                                                                       pady=10)
 
@@ -47,7 +49,7 @@ class UserAuthApp:
         self.clear_window()
 
         frame = tk.Frame(self.root)
-        frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER,height=500, width=600)
 
         tk.Label(frame, text='Register Account', font=('Arial', 24)).grid(row=0, columnspan=2, pady=10)
 
@@ -75,86 +77,107 @@ class UserAuthApp:
         tk.Button(frame, text='Register Account', font=('Arial', 16), command=self.register_event).grid(row=6,
                                                                                                         columnspan=2,
                                                                                                         pady=10)
+        ttk.Separator(frame, orient='horizontal').grid(row=7, columnspan=3, sticky='ew', pady=10)
 
-        tk.Label(frame, text='Already have an account?', font=('Arial', 16)).grid(row=7, columnspan=2, pady=10)
-        tk.Button(frame, text='Login', font=('Arial', 16), command=self.show_login_window).grid(row=8, columnspan=2,
+
+        tk.Label(frame, text='Already have an account?', font=('Arial', 16)).grid(row=8, columnspan=2, pady=10)
+        tk.Button(frame, text='Login', font=('Arial', 16), command=self.show_login_window).grid(row=9, columnspan=2,
                                                                                                 pady=10)
 
     def show_user_window(self):
         self.clear_window()
-        tk.Label(self.root, text='USER DASHBOARD', font=('Arial', 16)).grid(row=0, columnspan=3, pady=5)
 
-        # Search input field and button
-        self.search_entry = tk.Entry(self.root, width=20)
-        self.search_entry.grid(row=1, column=0, padx=5, pady=5)
-        tk.Button(self.root, text='Search', command=lambda: self.search_book_event()).grid(row=1,
-                                                                                           column=1,
-                                                                                           padx=5,
-                                                                                           pady=5)
+        # User Dashboard Label
+        tk.Label(self.root, text='USER DASHBOARD', font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0', borderwidth=2,
+                 relief='solid').grid(row=0, column=0, columnspan=3, pady=20, padx=10, sticky='nsew')
+
+        # Search input field
+        self.search_entry = tk.Entry(self.root, width=30, font=('Arial', 13))
+        self.search_entry.place(x=20, y=70, width=300, height=30)  # Adjust x, y coordinates as needed
+
+        # Search button
+        search_button = tk.Button(self.root, text='Search', command=self.search_book_event, font=('Arial', 13))
+        search_button.place(x=350, y=70, width=100, height=30)  # Adjust x, y coordinates as needed
 
         # Logout button
-        tk.Button(self.root, text='Logout', command=self.logout_event).grid(row=1, column=2, padx=5, pady=5)
+        logout_button = tk.Button(self.root, text='Logout', command=self.logout_event, font=('Arial', 13))
+        logout_button.place(x=1000, y=70, width=100, height=30)  # Adjust x, y coordinates as needed
 
         # Create Treeview widget to display book data
-        columns = ("ID", "Title", "Author", "Year", "Category")
-        self.book_tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        self.book_tree.grid(row=2, column=0, columnspan=3, pady=5)
-        # Define headings
+        columns = ("Stt", "Title", "Author", "Year", "Category")
+        self.book_tree = ttk.Treeview(self.root, columns=columns, show='headings', height=10)
+        self.book_tree.grid(row=3, column=0, columnspan=3, pady=20, padx=20, sticky='nsew')
+
+        # Define headings and set column widths
         for col in columns:
             self.book_tree.heading(col, text=col)
-            self.book_tree.column(col, width=100)
+            self.book_tree.column(col, width=150)
+
+        # Configure grid columns for equal weight
+        self.root.grid_rowconfigure(3, weight=1)  # Make row 3 (containing Treeview) expandable
+        root.grid_columnconfigure(0, weight=1)
+        root.grid_columnconfigure(1, weight=1)
+        root.grid_columnconfigure(2, weight=1)
 
         # Load book data from books.json and insert into Treeview
         self.load_books(self.book_tree)
 
     def show_admin_window(self):
         self.clear_window()
-        tk.Label(self.root, text='ADMIN DASHBOARD', font=('Arial', 16)).grid(row=0, columnspan=5, padx=5, pady=5)
+        tk.Label(self.root, text='ADMIN DASHBOARD', font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0',
+                 borderwidth=2, relief='solid').grid(row=0, columnspan=5, padx=10, pady=10, sticky='ew')
 
-        # Admin dashboard buttons
-        admin_buttons = [
-            ('Add Book', self.add_book_event),
-            ('Edit Book Info', self.edit_book_event),
-            ('Delete Book', self.delete_book_event),
-            ('Manage Users', self.manage_users_event),
-            ('Logout', self.logout_event)
-        ]
+
+        add_button = tk.Button(self.root, text='Add Book', command= self.add_book_event, font=('Arial', 13))
+        add_button.place(x=30, y=70, width=130, height=30)  # Adjust x, y coordinates as needed
+
+        edit_button = tk.Button(self.root, text='Edit Book Info', command=self.edit_book_event, font=('Arial', 13))
+        edit_button.place(x=180, y=70, width=130, height=30)  # Adjust x, y coordinates as needed
+
+        delete_button = tk.Button(self.root, text='Delete Book', command=self.delete_book_event, font=('Arial', 13))
+        delete_button.place(x=330, y=70, width=130, height=30)  # Adjust x, y coordinates as needed
+
+        manage_button = tk.Button(self.root, text='Manage Users', command=self.manage_users_event, font=('Arial', 13))
+        manage_button.place(x=480, y=70, width=130, height=30)  # Adjust x, y coordinates as needed
+
+        logout_button = tk.Button(self.root, text='Logout', command=self.logout_event, font=('Arial', 13))
+        logout_button.place(x=1000, y=70, width=130, height=30)  # Adjust x, y coordinates as needed
 
         # Category fetching
-        tk.Label(self.root, text='Category:', font=('Arial', 12)).grid(row=3, column=0, padx=5, pady=5, sticky='e')
-        self.category_entry = tk.Entry(self.root, width=20, font=('Arial', 12))
-        self.category_entry.grid(row=3, column=1, padx=5, pady=5)
-        tk.Button(self.root, text='Fetch Category Data', command=self.fetch_category_data).grid(row=3, column=2, padx=5,
-                                                                                                pady=5)
-
+        tk.Label(self.root, text='Category:', font=('Arial', 12)).place(x=30, y=370, width=130, height=30)
+        self.category_entry = tk.Entry(self.root, width=30, font=('Arial', 12))
+        self.category_entry.place(x=180, y=370, width=300, height=30)
+        tk.Button(self.root, text='Fetch Category Data', command=self.fetch_category_data).place(x=500, y=370,width=130, height=30)
         # Admin buttons
-        for i, (text, command) in enumerate(admin_buttons):
-            tk.Button(self.root, text=text, command=command).grid(row=1, column=i, padx=5, pady=5)
 
-        # Create Treeview widget to display book data **only once**
-        columns = ("ID", "Title", "Author", "Year", "Category")
-        self.book_tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        self.book_tree.grid(row=2, column=0, columnspan=3, pady=5)
+        columns = ("Stt", "Title", "Author", "Year", "Category")
+        self.book_tree = ttk.Treeview(self.root, columns=columns, show='headings', height=10)
+        self.book_tree.place(x=30, y=120)
 
-        # Define headings
+        # Define headings and set column widths
         for col in columns:
             self.book_tree.heading(col, text=col)
-            self.book_tree.column(col, width=100)
+            self.book_tree.column(col, width=250)
+
+        # Configure grid columns for equal weight
+        root.grid_columnconfigure(0, weight=1)
+        root.grid_columnconfigure(1, weight=1)
+        root.grid_columnconfigure(2, weight=1)
 
         # Load book data from books.json and insert into Treeview
         self.load_books(self.book_tree)
 
-    # --- Helper function to clear and create widgets ---
+
     def clear_and_create_widgets(self, title, command_select, command_cancel):
-        # Destroy specific widgets
         for widget in self.root.winfo_children():
             if isinstance(widget, (tk.Label, tk.Button, tk.Entry)):  # Include tk.Entry
                 widget.destroy()
 
         # Re-create the label and buttons
-        tk.Label(self.root, text=title, font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
-        tk.Button(self.root, text='Select Book', command=command_select).grid(row=5, column=0, pady=5)
-        tk.Button(self.root, text='Cancel', command=command_cancel).grid(row=5, column=1, pady=5)
+        tk.Label(self.root, text=title, font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0', borderwidth=2,
+                 relief='solid').grid(row=0, columnspan=2, pady=5, padx=20, sticky='n')
+        tk.Button(self.root, text='Select Book',font=('Arial',13), command=command_select).grid(row=5, column=0, pady=5)
+        tk.Button(self.root, text='Cancel', font=('Arial',13), command=command_cancel).grid(row=5, column=1, pady=5)
 
         # Update the Treeview
         self.book_tree.delete(*self.book_tree.get_children())
@@ -226,6 +249,11 @@ class UserAuthApp:
         age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
         return age >= 5
 
+    #def is_valid_year(year_str):
+    #    if len(year_str) == 4 and year_str.isdigit():
+    #        return True
+    #    return False
+
     def validate_password(self, password, re_password):
         return password == re_password
 
@@ -235,6 +263,8 @@ class UserAuthApp:
 
     def check_password(self, stored_password, provided_password):
         return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password.encode('utf-8'))
+
+
 
     def register_event(self):
         # Retrieve data from entry fields
@@ -356,17 +386,7 @@ class UserAuthApp:
     def logout_event(self):
         self.current_user = None
         self.show_login_window()
-        '''
-    def search_book_event(self, search_query):
-        # Implement search functionality here
-        # You can filter self.books based on search_query
-        # and display the results in a new window or update the Treeview
 
-
-        search_query = self.search_entry.get()
-        matching_books = [book for book in self.books if search_query in book['title'].lower()]
-        self.update_tree(matching_books)
-        '''
 
     def search_book_event(self):
         search_query = self.search_entry.get().lower()  # Lấy nội dung tìm kiếm và chuyển về chữ thường
@@ -399,31 +419,42 @@ class UserAuthApp:
 
     def add_book_event(self):
         self.clear_window()
-        tk.Label(self.root, text='ADD NEW BOOK', font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
+        tk.Label(self.root, text='ADD NEW BOOK', font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0', borderwidth=2,
+                 relief='solid').grid(row=0, columnspan=2, pady=5, padx=20, sticky='n')
 
         # Book form
         self.create_book_form()
-
+        button_font = ('Arial',13)
         # Save and Cancel buttons
-        tk.Button(self.root, text='Save', command=self.save_book).grid(row=5, columnspan=2, pady=5)
-        tk.Button(self.root, text='Cancel', command=self.show_admin_window).grid(row=6, columnspan=2, pady=5)
+        tk.Button(self.root, text='Save',font=button_font, command=self.save_book, height=1,width=10).grid(row=7, columnspan=2, pady=5)
+        tk.Button(self.root, text='Cancel',font=button_font, command=self.show_admin_window).grid(row=8, columnspan=2, pady=5)
 
     def create_book_form(self):
-        tk.Label(self.root, text='Title:').grid(row=1, column=0, pady=5, sticky=tk.E)
-        self.title_entry = tk.Entry(self.root)
-        self.title_entry.grid(row=1, column=1, pady=5)
+        # Configure grid weight for centering
+        self.root.grid_columnconfigure(0, weight=1)
+        self.root.grid_columnconfigure(1, weight=1)
 
-        tk.Label(self.root, text='Author:').grid(row=2, column=0, pady=5, sticky=tk.E)
-        self.author_entry = tk.Entry(self.root)
-        self.author_entry.grid(row=2, column=1, pady=5)
+        # Define font and padding
+        label_font = ('Arial', 14)
+        entry_font = ('Arial', 14)
+        pady = 10
+        padx = 20
 
-        tk.Label(self.root, text='Publication Year:').grid(row=3, column=0, pady=5, sticky=tk.E)
-        self.year_entry = tk.Entry(self.root)
-        self.year_entry.grid(row=3, column=1, pady=5)
+        tk.Label(self.root, text='Title:',font=label_font).grid(row=1, column=0, pady=pady, padx=padx, sticky=tk.E)
+        self.title_entry = tk.Entry(self.root, font=entry_font)
+        self.title_entry.grid(row=1, column=1, pady=pady,sticky=tk.W )
 
-        tk.Label(self.root, text='Category:').grid(row=4, column=0, pady=5, sticky=tk.E)
-        self.category_entry = tk.Entry(self.root)
-        self.category_entry.grid(row=4, column=1, pady=5)
+        tk.Label(self.root, text='Author:',font=label_font).grid(row=2, column=0, pady=pady, padx=padx, sticky=tk.E)
+        self.author_entry = tk.Entry(self.root,font=entry_font)
+        self.author_entry.grid(row=2, column=1, pady=pady,sticky=tk.W)
+
+        tk.Label(self.root, text='Publication Year:',font=label_font).grid(row=3, column=0,  pady=pady, padx=padx, sticky=tk.E)
+        self.year_entry = tk.Entry(self.root,font=entry_font)
+        self.year_entry.grid(row=3, column=1, pady=pady,sticky=tk.W)
+
+        tk.Label(self.root, text='Category:',font=label_font).grid(row=4, column=0, pady=pady, padx=padx, sticky=tk.E)
+        self.category_entry = tk.Entry(self.root,font=entry_font)
+        self.category_entry.grid(row=4, column=1, pady=pady,sticky=tk.W)
 
     def save_book(self):
         title = self.title_entry.get()
@@ -475,7 +506,8 @@ class UserAuthApp:
         self.clear_window()
 
         # Display edit book form
-        tk.Label(self.root, text='EDIT BOOK DETAILS', font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
+        tk.Label(self.root, text='EDIT BOOK DETAILS', font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0', borderwidth=2,
+                 relief='solid').grid(row=0, columnspan=2, pady=5)
 
         # Create book form with existing data
         self.create_book_form()
@@ -484,10 +516,11 @@ class UserAuthApp:
         self.year_entry.insert(0, self.editing_book['year'])
         self.category_entry.insert(0, self.editing_book['category'])
 
+        button_font = ('Arial', 13)
+
         # Save and Cancel buttons
-        tk.Button(self.root, text='Save Changes', command=self.save_edited_book).grid(row=7, column=5, columnspan=2,
-                                                                                      pady=5)
-        tk.Button(self.root, text='Cancel', command=self.show_admin_window).grid(row=8, column=5, columnspan=2, pady=5)
+        tk.Button(self.root, text='Save Changes', command=self.save_edited_book,height= 1, width=18, font= button_font).place(x=500, y=280)
+        tk.Button(self.root, text='Cancel', command=self.show_admin_window, height= 1, font= button_font).place(x=550, y=330)
 
     def save_edited_book(self):
         title = self.title_entry.get()
@@ -508,15 +541,9 @@ class UserAuthApp:
         # Save the updated books list to the file
         with open('books.json', 'w') as file:
             json.dump(self.books, file, indent=4)
-        mb.showinfo('Info', 'Delete success', command=self.show_admin_window)
 
-        # Update the Treeview
-        self.book_tree.delete(*self.book_tree.get_children())  # Clear existing data
-        for i, book in enumerate(self.books):
-            self.book_tree.insert('', tk.END, values=(i, book['title'], book['author'], book['year'], book['category']))
-        # mb.showinfo("Success", "Book details updated successfully")
-        # Show admin window
-        # self.show_admin_window()
+        mb.showinfo('Success', 'Book edit successfully')
+        self.show_admin_window()
 
     # --- Delete Book Functionality ---
 
@@ -549,71 +576,98 @@ class UserAuthApp:
 
     def manage_users_event(self):
         self.clear_window()
-        tk.Label(self.root, text='MANAGE USERS', font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
+
+        # Title
+        title_label = tk.Label(self.root, text='MANAGE USERS', font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0',
+                               borderwidth=2, relief='solid')
+        title_label.grid(row=0, columnspan=2, pady=5, padx=20, sticky='n')
 
         # Create Treeview widget to display user data
-        columns = ("ID", "Name", "Email", "Role")
+        columns = ("Stt", "Name", "Email", "Role")
         self.user_tree = ttk.Treeview(self.root, columns=columns, show='headings')
-        self.user_tree.grid(row=1, column=0, pady=5)
+        self.user_tree.grid(row=1, column=0, columnspan=2, pady=20, padx=20)
 
         # Define headings
         for col in columns:
             self.user_tree.heading(col, text=col)
-            self.user_tree.column(col, width=100)
+            self.user_tree.column(col, width=200)
 
         # Load user data from user.json and insert into Treeview
         self.users = self.load_users()
         for i, user in enumerate(self.users):
             self.user_tree.insert('', tk.END, values=(i, user['name'], user['email'], user['role']))
 
-        # Add User button
-        tk.Button(self.root, text='Add User', command=self.add_user_event).grid(row=3, column=0, pady=5)
+        # Buttons
+        button_font = ('Arial', 13)
+        button_padx = 20
+        button_pady = 5
 
-        # Edit User button
-        tk.Button(self.root, text='Edit User', command=self.edit_user_event).grid(row=3, column=1, pady=5)
+        add_button = tk.Button(self.root, text='Add User', font=button_font, command=self.add_user_event, height = 1, width = 22)
+        add_button.grid(row=2, column=0, pady=button_pady, padx=button_padx, sticky='e')
 
-        # Delete User button
-        tk.Button(self.root, text='Delete User', command=self.delete_user_event).grid(row=4, column=0, pady=5)
+        edit_button = tk.Button(self.root, text='Edit User', font=button_font, command=self.edit_user_event, height = 1, width = 22)
+        edit_button.grid(row=2, column=1, pady=button_pady, padx=button_padx, sticky='w')
 
-        # Back to Admin Dashboard button
-        tk.Button(self.root, text='Back to Admin Dashboard', command=self.show_admin_window).grid(row=4, column=1,
-                                                                                                  pady=5)
+        delete_button = tk.Button(self.root, text='Delete User', font=button_font, command=self.delete_user_event, height = 1, width = 22)
+        delete_button.grid(row=3, column=0, pady=button_pady, padx=button_padx, sticky='e')
+
+        back_button = tk.Button(self.root, text='Back to Admin Dashboard', font=button_font,
+                                command=self.show_admin_window, height = 1, width = 22)
+        back_button.grid(row=3, column=1, pady=button_pady, padx=button_padx, sticky='w')
 
     def add_user_event(self):
         self.clear_window()
-        tk.Label(self.root, text='ADD NEW USER', font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
+        tk.Label(self.root, text='ADD NEW USER', font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0', borderwidth=2,
+                 relief='solid').grid(row=0, columnspan=2, pady=5, padx=20, sticky='n')
 
         # User form
         self.create_user_form()
+        button_font = ('Arial', 13)
 
         # Save and Cancel buttons
-        tk.Button(self.root, text='Save', command=self.save_user).grid(row=7, columnspan=2, pady=5)  # Moved to row 7
-        tk.Button(self.root, text='Cancel', command=self.manage_users_event).grid(row=8, columnspan=2, pady=5)
+        tk.Button(self.root, text='Save', font= button_font, command=self.save_user, height=1, width=10).grid(row=7, columnspan=2, pady=5)  # Moved to row 7
+        tk.Button(self.root, text='Cancel', font = button_font, command=self.manage_users_event).grid(row=8, columnspan=2, pady=5)
 
     def create_user_form(self):
-        tk.Label(self.root, text='Name:').grid(row=1, column=0, pady=5, sticky=tk.E)
-        self.name_entry = tk.Entry(self.root)
-        self.name_entry.grid(row=1, column=1, pady=5)
+        # Configure grid weight for centering
+        self.root.grid_columnconfigure(0, weight=1)
+        self.root.grid_columnconfigure(1, weight=1)
 
-        tk.Label(self.root, text='Date of birth (YYYY-MM-DD):').grid(row=2, column=0, pady=5, sticky=tk.E)
-        self.dob_entry = tk.Entry(self.root)
-        self.dob_entry.grid(row=2, column=1, pady=5)
+        # Define font and padding
+        label_font = ('Arial', 14)
+        entry_font = ('Arial', 14)
+        pady = 10
+        padx = 20
 
-        tk.Label(self.root, text='Email:').grid(row=3, column=0, pady=5, sticky=tk.E)
-        self.email_entry = tk.Entry(self.root)
-        self.email_entry.grid(row=3, column=1, pady=5)
+        # Name
+        tk.Label(self.root, text='Name:', font=label_font).grid(row=1, column=0, pady=pady, padx=padx, sticky=tk.E)
+        self.name_entry = tk.Entry(self.root, font=entry_font)
+        self.name_entry.grid(row=1, column=1, pady=pady, padx=padx, sticky=tk.W)
 
-        tk.Label(self.root, text='Password:').grid(row=4, column=0, pady=5, sticky=tk.E)
-        self.pw_entry = tk.Entry(self.root, show='*')
-        self.pw_entry.grid(row=4, column=1, pady=5)
+        # Date of birth
+        tk.Label(self.root, text='Date of birth (YYYY-MM-DD):', font=label_font).grid(row=2, column=0, pady=pady, padx=padx, sticky=tk.E)
+        self.dob_entry = tk.Entry(self.root, font=entry_font)
+        self.dob_entry.grid(row=2, column=1, pady=pady, padx=padx, sticky=tk.W)
 
-        tk.Label(self.root, text='Retype Password:').grid(row=5, column=0, pady=5, sticky=tk.E)
-        self.repw_entry = tk.Entry(self.root, show='*')
-        self.repw_entry.grid(row=5, column=1, pady=5)
+        # Email
+        tk.Label(self.root, text='Email:', font=label_font).grid(row=3, column=0, pady=pady, padx=padx, sticky=tk.E)
+        self.email_entry = tk.Entry(self.root, font=entry_font)
+        self.email_entry.grid(row=3, column=1, pady=pady, padx=padx, sticky=tk.W)
 
-        tk.Label(self.root, text='Role (user/admin):').grid(row=6, column=0, pady=5, sticky=tk.E)
-        self.role_entry = tk.Entry(self.root)
-        self.role_entry.grid(row=6, column=1, pady=5)
+        # Password
+        tk.Label(self.root, text='Password:', font=label_font).grid(row=4, column=0, pady=pady, padx=padx, sticky=tk.E)
+        self.pw_entry = tk.Entry(self.root, font=entry_font, show='*')
+        self.pw_entry.grid(row=4, column=1, pady=pady, padx=padx, sticky=tk.W)
+
+        # Retype Password
+        tk.Label(self.root, text='Retype Password:', font=label_font).grid(row=5, column=0, pady=pady, padx=padx, sticky=tk.E)
+        self.repw_entry = tk.Entry(self.root, font=entry_font, show='*')
+        self.repw_entry.grid(row=5, column=1, pady=pady, padx=padx, sticky=tk.W)
+
+        # Role
+        tk.Label(self.root, text='Role (user/admin):', font=label_font).grid(row=6, column=0, pady=pady, padx=padx, sticky=tk.E)
+        self.role_entry = tk.Entry(self.root, font=entry_font)
+        self.role_entry.grid(row=6, column=1, pady=pady, padx=padx, sticky=tk.W)
 
     def save_user(self):
         name = self.name_entry.get()
@@ -653,6 +707,11 @@ class UserAuthApp:
             mb.showerror("Error", "Email already exists.")
             return
 
+        # Check if admin/user
+        if role != 'user' and role != 'admin':
+            mb.showerror("Error", "Role must be user/admin only.")
+            return
+
         # Hash the password
         hashed_password = self.hash_password(password)
 
@@ -679,7 +738,8 @@ class UserAuthApp:
         self.editing_user = self.users[user_id]
 
         self.clear_window()
-        tk.Label(self.root, text='EDIT USER DETAILS', font=('Arial', 16)).grid(row=0, columnspan=2, pady=5)
+        tk.Label(self.root, text='EDIT USER DETAILS', font=('Arial', 24, 'bold'), fg='white', bg='#58A4B0', borderwidth=2,
+                 relief='solid').grid(row=0, columnspan=2, pady=5, padx=20, sticky='n')
 
         # User form with existing data
         self.create_user_form()
@@ -688,9 +748,11 @@ class UserAuthApp:
         self.email_entry.insert(0, self.editing_user['email'])
         self.role_entry.insert(0, self.editing_user['role'])
 
+        button_font = ('Arial', 13)
+
         # Save and Cancel buttons
-        tk.Button(self.root, text='Save Changes', command=self.save_edited_user).grid(row=7, columnspan=2, pady=5)
-        tk.Button(self.root, text='Cancel', command=self.manage_users_event).grid(row=8, columnspan=2, pady=5)
+        tk.Button(self.root, text='Save Changes', font= button_font, command=self.save_edited_user).grid(row=7, columnspan=2, pady=5)
+        tk.Button(self.root, text='Cancel', font= button_font, command=self.manage_users_event).grid(row=8, columnspan=2, pady=5)
 
     def save_edited_user(self):
         name = self.name_entry.get()
@@ -751,8 +813,12 @@ class UserAuthApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.configure(bg='Ivory')
+    root.configure(bg='#BAC1B8')
     root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
+    root.resizable(width=True, height=True)
     app = UserAuthApp(root)
     root.mainloop()
+
+
+
 
